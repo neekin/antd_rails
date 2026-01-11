@@ -1,0 +1,236 @@
+<div class="max-w-7xl mx-auto py-10 px-6 space-y-8">
+  <div class="border-b border-gray-200 pb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Ant Design for Rails</h1>
+    <p class="mt-2 text-gray-600">
+      企业级后台 UI 组件库文档。
+    </p>
+  </div>
+
+  <div class="flex gap-8 items-start">
+    <!-- Left Sidebar (Navigation) -->
+    <div class="w-64 flex-shrink-0 sticky top-4">
+       <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+         <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 font-semibold text-gray-700">Components</div>
+         <nav class="p-2 space-y-1">
+           <a href="#general" class="block px-3 py-2 text-sm font-medium text-gray-900 bg-blue-50 text-blue-700 rounded-md">General</a>
+           <a href="#entry" class="block px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md">Data Entry</a>
+           <a href="#display" class="block px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md">Data Display</a>
+         </nav>
+       </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-w-0">
+      
+      <%= ant_tabs(default: "general") do |t| %>
+        
+        <!-- ==========================
+             TAB 1: GENERAL (Button) 
+             ========================== -->
+        <% t.with_item(label: "General", id: "general") do %>
+          <div class="space-y-16 py-8">
+            
+            <!-- Button Component Documentation -->
+            <section id="button-doc">
+              <%= render Ui::ComponentHeaderComponent.new(
+                title: "Button 按钮",
+                description: "按钮用于开始一个即时操作。",
+                when_to_use: [
+                  "标记一个（或封装一组）操作命令。",
+                  "响应用户点击行为，触发相应的业务逻辑。",
+                  "Primary 按钮用于主行动点，一个区域通常只有一个主按钮。"
+                ]
+              ) %>
+
+              <!-- Example 1: Type -->
+              <h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+              <%= render Ui::ExampleComponent.new(
+                title: "按钮类型 (Types)", 
+                description: "按钮有四种类型：主按钮、次按钮、虚线按钮、文本按钮(通过样式实现)。",
+                code: 'ant_button "Primary Button", type: :primary
+ant_button "Default Button"
+ant_button "Dashed Button", class: "border-dashed"
+ant_button "Danger Button", type: :primary, class: "!bg-red-500 !border-red-500"'
+              ) do %>
+                <%= ant_button "Primary Button", type: :primary %>
+                <%= ant_button "Default Button" %>
+                <%= ant_button "Dashed Button", class: "border-dashed" %>
+                <%= ant_button "Danger Button", type: :primary, class: "!bg-red-500 !border-red-500" %>
+              <% end %>
+
+              <!-- Example 2: Block & Icon -->
+              <%= render Ui::ExampleComponent.new(
+                title: "图标与嵌套 (Icon & Block)", 
+                description: "通过 Block 传递内容，可以实现复杂的按钮布局，例如带图标的按钮。",
+                code: 'ant_button type: :primary do
+  tag.span("🔍", class: "mr-2") + "Search"
+end'
+              ) do %>
+                <%= ant_button type: :primary do %>
+                  <span class="mr-2">🔍</span>Search
+                <% end %>
+                <%= ant_button class: "ml-2" do %>
+                  Download<span class="ml-2">⬇️</span>
+                <% end %>
+              <% end %>
+
+              <!-- API Table -->
+              <h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+              <%= render Ui::ApiTableComponent.new do |api| %>
+                <% api.row "label", "按钮文本内容（若不使用 block）", "String", "nil" %>
+                <% api.row "type", "按钮类型，决定颜色和样式", "Symbol (:primary, :default)", ":default" %>
+                <% api.row "class", "自定义 CSS 类名，覆盖或追加样式", "String", "nil" %>
+                <% api.row "html_options", "其他标准 HTML 属性 (如 data-*, id, onclick)", "Hash", "{}" %>
+                <% api.row "block", "自定义按钮内部 HTML 内容，优先级高于 label", "Block", "nil" %>
+              <% end %>
+            </section>
+
+             <hr class="border-gray-200 my-12">
+
+             <!-- Tag Component Documentation -->
+             <section id="tag-doc">
+               <%= render Ui::ComponentHeaderComponent.new(
+                title: "Tag 标签",
+                description: "进行标记和分类的小标签。",
+                when_to_use: [
+                  "用于标记事物的属性和维度。",
+                  "进行分类。"
+                ]
+              ) %>
+              
+              <%= render Ui::ExampleComponent.new(
+                title: "基本用法",
+                code: 'ant_tag "Success", color: :success
+ant_tag "Processing", color: :processing
+ant_tag "Error", color: :error
+ant_tag "Warning", color: :warning'
+              ) do %>
+                <%= ant_tag "Success", color: :success %>
+                <%= ant_tag "Processing", color: :processing %>
+                <%= ant_tag "Error", color: :error %>
+                <%= ant_tag "Warning", color: :warning %>
+                <%= ant_tag "Default" %>
+              <% end %>
+
+               <h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+               <%= render Ui::ApiTableComponent.new do |api| %>
+                <% api.row "label", "标签文本", "String", "nil" %>
+                <% api.row "color", "标签色系状态", "Symbol (:success, :processing, :error, :warning, :default)", ":default" %>
+                <% api.row "class", "自定义样式", "String", "nil" %>
+              <% end %>
+             </section>
+
+          </div>
+        <% end %>
+
+        <!-- ==========================
+             TAB 2: DATA ENTRY 
+             ========================== -->
+        <% t.with_item(label: "Data Entry", id: "entry") do %>
+           <div class="space-y-16 py-8">
+             <!-- Input Documentation -->
+             <section>
+               <%= render Ui::ComponentHeaderComponent.new(
+                title: "Input 输入框",
+                description: "通过鼠标或键盘输入内容，是最基础的表单域的包装。",
+                when_to_use: ["需要用户输入表单域内容时。"]
+              ) %>
+              
+              <%= render Ui::ExampleComponent.new(
+                title: "基本使用", 
+                code: 'ant_input name: "username", placeholder: "Basic usage"'
+              ) do %>
+                <div class="max-w-sm">
+                   <%= ant_input name: "username", placeholder: "Basic usage" %>
+                </div>
+              <% end %>
+
+              <%= render Ui::ExampleComponent.new(
+                title: "密码输入", 
+                code: 'ant_input name: "password", type: :password, placeholder: "Input password"'
+              ) do %>
+                <div class="max-w-sm">
+                   <%= ant_input name: "password", type: :password, placeholder: "Input password" %>
+                </div>
+              <% end %>
+
+               <h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+               <%= render Ui::ApiTableComponent.new do |api| %>
+                <% api.row "name", "输入框 name 属性", "String", "nil" %>
+                <% api.row "value", "输入框值", "String", "nil" %>
+                <% api.row "type", "HTML input 类型", "Symbol (:text, :password, :email...)", ":text" %>
+                <% api.row "placeholder", "占位文本", "String", "nil" %>
+              <% end %>
+             </section>
+           </div>
+        <% end %>
+
+         <!-- ==========================
+             TAB 3: DATA DISPLAY 
+             ========================== -->
+        <% t.with_item(label: "Data Display", id: "display") do %>
+           <div class="space-y-16 py-8">
+             
+             <!-- Table Documentation -->
+             <section>
+               <%= render Ui::ComponentHeaderComponent.new(
+                title: "Table 表格",
+                description: "展示行列数据。",
+                when_to_use: ["当有大量结构化的数据需要展现时。", "需要对数据进行排序、搜索、分页、自定义操作等复杂行为时。"]
+              ) %>
+              
+              <% 
+                 user_struct = Struct.new(:id, :name, :role, :status)
+                 users = [
+                   user_struct.new(1, "John Brown", "Developer", :success),
+                   user_struct.new(2, "Jim Green", "Designer", :processing)
+                 ]
+              %>
+
+              <%= render Ui::ExampleComponent.new(
+                title: "基础表格 DSL",
+                description: "使用 Block DSL 定义列。支持自定义 HTML 内容。",
+                code: 'ant_table(users) do |t|
+  t.column "ID" { |u| u.id }
+  t.column "Name" { |u| u.name }
+  t.column "Action" { |u| link_to "Edit", edit_user_path(u) }
+end'
+              ) do %>
+                <%= ant_table(users) do |t| %>
+                   <% t.column "ID", class: "w-20" do |u| %>
+                     <%= u.id %>
+                   <% end %>
+                   <% t.column "Name" do |u| %>
+                     <div class="font-medium"><%= u.name %></div>
+                   <% end %>
+                   <% t.column "Tags" do |u| %>
+                     <%= ant_tag u.role %>
+                     <%= ant_tag "Nice", color: u.status %>
+                   <% end %>
+                   <% t.column "Action", class: "text-blue-600" do |u| %>
+                     <a>Invite <%= u.name %></a>
+                   <% end %>
+                <% end %>
+              <% end %>
+
+              <h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+               <%= render Ui::ApiTableComponent.new do |api| %>
+                <% api.row "collection", "要渲染的数据集合", "Enumerable", "required" %>
+                <% api.row "class", "外层容器样式类", "String", "nil" %>
+              <% end %>
+              
+              <h4 class="font-bold text-gray-700 mt-6 mb-2">Column DSL (t.column)</h4>
+              <%= render Ui::ApiTableComponent.new do |api| %>
+                <% api.row "header", "表头标题", "String", "required" %>
+                <% api.row "class", "列（th/td）的样式类，通常用于设置宽度或对齐", "String", "nil" %>
+                <% api.row "block", "列内容渲染逻辑", "Block(item)", "required" %>
+              <% end %>
+
+             </section>
+           </div>
+        <% end %>
+
+      <% end %> <!-- End Tabs -->
+    </div>
+  </div>
+</div>

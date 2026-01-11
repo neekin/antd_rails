@@ -1,0 +1,15 @@
+<div class="mb-10">
+  <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= @title %></h1>
+  <p class="text-gray-600 text-lg leading-relaxed mb-6"><%= @description %></p>
+  
+  <% if @when_to_use.any? %>
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r">
+      <h4 class="text-blue-900 font-semibold mb-2">When To Use (何时使用)</h4>
+      <ul class="list-disc list-inside text-blue-800 space-y-1 text-sm">
+        <% @when_to_use.each do |item| %>
+          <li><%= item %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,40 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Card 卡片",
+  description: "通用卡片容器。",
+  when_to_use: ["需要一个带阴影和圆角的容器来展示内容时。"]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "带标题和操作的卡片",
+  language: :erb,
+  code: card_basic_code
+) do %>
+  <div class="w-full max-w-md">
+    <%= ant_card title: "Project Info", extra: ant_tag("Active", color: :success) do %>
+      <p class="text-gray-600">This is a card content.</p>
+      <p class="text-gray-600">It can hold anything.</p>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "简洁卡片",
+  language: :erb,
+  code: card_simple_code
+) do %>
+  <div class="w-full max-w-md">
+    <%= ant_card do %>
+      <p class="text-gray-600">No title, just content.</p>
+    <% end %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "title", "卡片标题文本", "String", "nil" %>
+  <% api.row "extra", "卡片右上角的操作区域，通常放置按钮、标签或链接", "String | HTML", "nil" %>
+  <% api.row "class", "卡片容器的自定义样式类", "String", "nil" %>
+  <% api.row "block", "卡片主体内容", "Block", "nil" %>
+<% end %>

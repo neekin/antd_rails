@@ -1,0 +1,7 @@
+<%= content_tag :button, **@html_options.merge(class: classes) do %>
+  <% if @label %>
+    <span><%= @label %></span>
+  <% else %>
+    <%= content %>
+  <% end %>
+<% end %>

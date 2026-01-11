@@ -1,0 +1,50 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Input 输入框",
+  description: "通过鼠标或键盘输入内容，是最基础的表单域的包装。",
+  when_to_use: ["需要用户输入表单域内容时。"]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本使用", 
+  language: :erb,
+  code: input_basic_code
+) do %>
+  <div class="max-w-sm">
+     <%= ant_input name: "username", placeholder: "Basic usage" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "密码输入", 
+  language: :erb,
+  code: input_password_code
+) do %>
+  <div class="max-w-sm">
+     <%= ant_input name: "password", type: :password, placeholder: "Input password" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "禁用与只读 (Disabled / Readonly)", 
+  language: :erb,
+  code: input_disabled_code
+) do %>
+  <div class="max-w-sm">
+     <%= ant_input name: "disabled_input", placeholder: "Disabled", disabled: true %>
+     <%= ant_input name: "readonly_input", value: "Readonly Value", readonly: true, class: "mt-4" %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "name", "输入框名称 (name 属性)", "String", "nil" %>
+  <% api.row "value", "输入框当前值", "String", "nil" %>
+  <% api.row "type", "输入框类型 (如 :text, :password, :email, :number)", "Symbol", ":text" %>
+  <% api.row "placeholder", "输入框占位文本", "String", "nil" %>
+  <% api.row "disabled", "是否禁用状态 (HTML 属性)", "Boolean", "false" %>
+  <% api.row "readonly", "是否只读状态 (HTML 属性)", "Boolean", "false" %>
+  <% api.row "class", "自定义样式类名", "String", "nil" %>
+  <% api.row "html_options", "其他标准 input 属性 (如 autocomplete, autofocus, onChange)", "Hash", "{}" %>
+<% end %>

@@ -1,0 +1,46 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Button 按钮",
+  description: "按钮用于开始一个即时操作。",
+  when_to_use: [
+    "标记一个（或封装一组）操作命令。",
+    "响应用户点击行为，触发相应的业务逻辑。",
+    "Primary 按钮用于主行动点，一个区域通常只有一个主按钮。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "按钮类型 (Types)", 
+  description: "按钮有四种类型：主按钮、次按钮、虚线按钮、文本按钮(通过样式实现)。",
+  language: :erb,
+  code: button_types_code
+) do %>
+  <%= ant_button "Primary Button", type: :primary %>
+  <%= ant_button "Default Button" %>
+  <%= ant_button "Dashed Button", class: "border-dashed" %>
+  <%= ant_button "Danger Button", type: :primary, class: "!bg-red-500 !border-red-500" %>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "图标与嵌套 (Icon & Block)", 
+  description: "通过 Block 传递内容，可以实现复杂的按钮布局，例如带图标的按钮。",
+  language: :erb,
+  code: button_icon_code
+) do %>
+  <%= ant_button type: :primary do %>
+    <span class="mr-2">🔍</span>Search
+  <% end %>
+  <%= ant_button class: "ml-2" do %>
+    Download<span class="ml-2">⬇️</span>
+  <% end %>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "label", "按钮文本内容（若不使用 block）", "String", "nil" %>
+  <% api.row "type", "按钮类型，决定颜色和样式", "Symbol (:primary, :default)", ":default" %>
+  <% api.row "class", "自定义 CSS 类名，覆盖或追加样式", "String", "nil" %>
+  <% api.row "html_options", "其他标准 HTML 属性 (如 data-*, id, onclick)", "Hash", "{}" %>
+  <% api.row "block", "自定义按钮内部 HTML 内容，优先级高于 label", "Block", "nil" %>
+<% end %>

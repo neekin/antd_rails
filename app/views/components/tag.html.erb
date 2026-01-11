@@ -1,0 +1,30 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Tag 标签",
+  description: "进行标记和分类的小标签。",
+  when_to_use: [
+    "用于标记事物的属性和维度。",
+    "进行分类。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本用法",
+  language: :erb,
+  code: tag_basic_code
+) do %>
+  <%= ant_tag "Success", color: :success %>
+  <%= ant_tag "Processing", color: :processing %>
+  <%= ant_tag "Error", color: :error %>
+  <%= ant_tag "Warning", color: :warning %>
+  <%= ant_tag "Default" %>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "label", "标签文本内容", "String", "nil" %>
+  <% api.row "color", "标签语义化颜色 (:success, :processing, :error, :warning, :default) 或 (:red, :blue, :orange...)", "Symbol", ":default" %>
+  <% api.row "class", "自定义样式类", "String", "nil" %>
+  <% api.row "html_options", "其他 HTML 属性", "Hash", "{}" %>
+<% end %>

@@ -1,0 +1,40 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Select 选择器",
+  description: "下拉选择器。",
+  when_to_use: [
+    "弹出一个下拉菜单给用户选择操作。",
+    "当选项过多时，使用下拉菜单展示并选择内容。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本使用",
+  language: :erb,
+  code: select_basic_code
+) do %>
+  <div class="max-w-sm">
+    <%= ant_select name: "role", options: ["Admin", "User", "Guest"], selected: "User" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "禁用状态",
+  language: :erb,
+  code: select_disabled_code
+) do %>
+  <div class="max-w-sm">
+    <%= ant_select name: "status", options: ["Active", "Inactive"], disabled: true %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "name", "Select 控件名称", "String", "nil" %>
+  <% api.row "options", "选项数据源。支持 Array (`['A', 'B']`) 或 Hash (`{'Label' => 'Value'}`)，推荐配合 `options_for_select` 使用", "Array | Hash", "[]" %>
+  <% api.row "selected", "当前选中的值 (Value)", "String | Integer", "nil" %>
+  <% api.row "disabled", "是否禁用选择器", "Boolean", "false" %>
+  <% api.row "class", "自定义样式类名", "String", "nil" %>
+  <% api.row "html_options", "其他标准 select 属性 (如 multiple, include_blank)", "Hash", "{}" %>
+<% end %>

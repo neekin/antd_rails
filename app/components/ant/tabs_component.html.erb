@@ -1,0 +1,30 @@
+<div class="<%= @html_options[:class] %>" 
+     data-controller="ant--tabs" 
+     data-ant--tabs-active-class="text-[#1677ff] border-b-2 border-[#1677ff]"
+     data-ant--tabs-inactive-class="text-gray-600 border-transparent hover:text-[#4096ff]">
+  
+  <!-- Nav -->
+  <div class="flex border-b border-[#f0f0f0] mb-4">
+    <% items.each_with_index do |item, index| %>
+      <% is_active = @default ? item.id == @default : index == 0 %>
+      <div class="px-4 py-3 cursor-pointer transition-colors text-[14px] font-medium border-b-2 mb-[-1px] <%= is_active ? 'text-[#1677ff] border-[#1677ff]' : 'text-gray-600 border-transparent hover:text-[#4096ff]' %>"
+           data-ant--tabs-target="tab"
+           data-id="<%= item.id %>"
+           data-action="click->ant--tabs#switch">
+        <%= item.label %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Content -->
+  <div>
+    <% items.each_with_index do |item, index| %>
+      <% is_active = @default ? item.id == @default : index == 0 %>
+      <div class="<%= is_active ? '' : 'hidden' %>" 
+           data-ant--tabs-target="panel"
+           data-id="<%= item.id %>">
+        <%= item %>
+      </div>
+    <% end %>
+  </div>
+</div>

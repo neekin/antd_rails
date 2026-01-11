@@ -1,0 +1,19 @@
+<div class="bg-white border border-gray-200 rounded-lg shadow-sm <%= @html_options[:class] %>">
+  <% if @title || @extra %>
+    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+      <% if @title %>
+        <div class="font-medium text-[16px] text-gray-900"><%= @title %></div>
+      <% end %>
+      
+      <% if @extra %>
+        <div class="text-sm text-blue-500 hover:text-blue-400 cursor-pointer">
+          <%= @extra %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+  
+  <div class="p-6 text-[14px] text-gray-700">
+    <%= content %>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<nav class="flex items-center justify-between select-none font-sans text-[14px] w-full <%= @html_options[:class] %>">
+  
+  <!-- Left Side: Info & Size Changer -->
+  <div class="flex items-center gap-4">
+    <div class="text-gray-500 text-sm">
+      Total <%= @total_count %> items
+    </div>
+
+    <!-- Size Changer -->
+    <% if @show_size_changer %>
+      <div class="relative">
+        <select onchange="window.location.href=this.value" 
+                class="appearance-none bg-white border border-[#d9d9d9] hover:border-[#4096ff] text-gray-700 text-sm rounded-[6px] pl-3 pr-8 py-1 focus:outline-none focus:border-[#4096ff] transition-all cursor-pointer">
+          <% [10, 20, 50, 100].each do |size| %>
+            <option value="<%= per_page_link(size) %>" <%= "selected" if size == @per_page %>><%= size %> / page</option>
+          <% end %>
+        </select>
+        <!-- Custom Arrow -->
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+          <svg class="fill-current h-3 w-3" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Right Side: Pagination Controls -->
+  <div class="flex items-center">
+    <!-- Prev Button -->
+    <% prev_page = @current_page - 1 %>
+    <% prev_disabled = prev_page < 1 %>
+    
+    <a href="<%= prev_disabled ? 'javascript:;' : page_link(prev_page) %>" 
+       class="flex items-center justify-center min-w-[32px] h-[32px] mr-2 rounded-[6px] border border-transparent transition-all <%= prev_disabled ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:text-[#1677ff] cursor-pointer' %>">
+      <svg viewBox="64 64 896 896" focusable="false" data-icon="left" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"></path></svg>
+    </a>
+
+    <!-- Page Numbers -->
+    <% (1..@total_pages).each do |page| %>
+      <% is_active = page == @current_page %>
+      <a href="<%= page_link(page) %>"
+         class="flex items-center justify-center min-w-[32px] h-[32px] mr-2 rounded-[6px] border transition-all cursor-pointer font-medium
+                <%= is_active ? 
+                    'border-[#1677ff] text-[#1677ff]' : 
+                    'border-[#d9d9d9] bg-white text-[rgba(0,0,0,0.88)] hover:border-[#1677ff] hover:text-[#1677ff]' %>">
+        <%= page %>
+      </a>
+    <% end %>
+
+    <!-- Next Button -->
+    <% next_page = @current_page + 1 %>
+    <% next_disabled = next_page > @total_pages %>
+    
+    <a href="<%= next_disabled ? 'javascript:;' : page_link(next_page) %>" 
+       class="flex items-center justify-center min-w-[32px] h-[32px] mr-2 rounded-[6px] border border-transparent transition-all <%= next_disabled ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:text-[#1677ff] cursor-pointer' %>">
+      <svg viewBox="64 64 896 896" focusable="false" data-icon="right" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path></svg>
+    </a>
+  </div>
+</nav>

@@ -1,0 +1,36 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Tabs 标签页",
+  description: "选项卡切换组件。",
+  when_to_use: ["提供平级的区域将大块内容进行收纳和展现，保持界面整洁。"]
+) %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基础用法",
+  description: "通过 default 参数指定初始激活的 Tab ID。",
+  language: :erb,
+  code: tabs_basic_code
+) do %>
+  <%= ant_tabs(default: "a") do |t| %>
+    <% t.with_item(label: "Tab A", id: "a") do %>
+       <div class="p-4 bg-gray-50 rounded text-center text-gray-500 italic">Content of Tab A</div>
+    <% end %>
+    <% t.with_item(label: "Tab B", id: "b") do %>
+       <div class="p-4 bg-gray-50 rounded text-center text-gray-500 italic">Content of Tab B</div>
+    <% end %>
+  <% end %>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12 border-b pb-2 text-pink-600">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "default", "默认激活的 Tab 唯一标识", "String", "First item id" %>
+  <% api.row "class", "Tabs 容器自定义 CSS 类", "String", "nil" %>
+<% end %>
+
+<h4 class="font-bold text-gray-700 mt-10 mb-4 flex items-center">
+  <span class="bg-gray-100 px-2 py-1 rounded text-pink-600 font-mono mr-2">t.with_item</span> DSL 参数
+</h4>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "label", "选项卡标题文本", "String", "required" %>
+  <% api.row "id", "选项卡唯一标识，用于切换逻辑", "String", "required" %>
+  <% api.row "block", "选项卡面板对应的 HTML 内容", "Block", "required" %>
+<% end %>
