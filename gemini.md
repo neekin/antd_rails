@@ -7,6 +7,8 @@
 3. **交互案例**：必要时提供与后端交互的实际案例（如 `form_with` 绑定）。
 4. **文档标准**：对标 Ant Design 官方文档。必须包含组件描述、多种场景示例以及详细的 **API 属性表 (Props)**（包含参数名、说明、类型、默认值）。
 5. **文档增量原则 (铁律)**：添加新组件文档时，**严禁修改或破坏现有文档**。应通过追加新章节或新 Tab 的方式进行增量更新，除非组件发生破坏性变更。
+6. **文档代码规范**：在文档 Helper (`DocumentationHelper`) 中定义演示代码时，**必须使用 Ruby Heredoc (`<<~RUBY`)** 并配合 `Ui::ExampleComponent` 的 `language: :erb` 参数。严禁在 View 的 `render` 参数中直接书写包含复杂 ERB 标签的多行字符串，以避免解析错误。
+7. **Headless UI 模式**：对于 Select、Modal 等复杂交互组件，放弃原生 HTML 标签的样式定制，转而采用 **Trigger + Panel + Stimulus** 的 Headless 模式，以实现 100% 的 Ant Design 视觉还原。
 
 ---
 
@@ -70,8 +72,9 @@
 
 ## 5. 开发计划
 1. [x] 后端基础架构搭建 (Rails + Hotwire + Tailwind + ViewComponent)
-    - **已完成组件**: Button, Tag, Input, Select, Card, Table, Tabs
-    - **文档中心**: `/components` (Kitchen Sink + 侧边栏导航)
+    - **UI 库**: Button, Tag, Input, Select (Headless), Card, Table (Sticky/Pagination), Tabs, Modal
+    - **文档中心**: `/components` (独立页面 + 侧边栏导航 + API 属性表)
+    - **AI 辅助**: `llm_context.md` & `.github/copilot-instructions.md`
 2. [ ] Taro 多端项目初始化
 3. [ ] 核心分销模型设计 (Database Schema)
 4. [ ] API 接口定义

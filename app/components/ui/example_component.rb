@@ -10,15 +10,20 @@ module Ui
     private
 
     def highlight_erb(code)
-      # 简单的语法高亮：将 <% %> 包裹在紫色中，将 # 注释包裹在灰色中
+      # 1. Escape HTML entities to prevent XSS
       formatted = h(code)
       
-      # Highlight ERB tags
+      # 2. Fix over-escaped quotes for better readability in code blocks
+      # <pre> handles ' and " fine, we don't need to escape them as entities usually.
+      formatted = formatted.gsub("&#39;", "'").gsub("&quot;", '"')
+
+      # 3. Highlight ERB tags
       formatted = formatted.gsub(/&lt;%(=)?/, '<span class="text-purple-400">&lt;%\1</span>')
       formatted = formatted.gsub(/%&gt;/, '<span class="text-purple-400">%&gt;</span>')
       
-      # Highlight Comments (simple implementation)
-      formatted = formatted.gsub(/(#.+)$/, '<span class="text-gray-500 italic">\1</span>')
+      # 4. Highlight Comments (simple implementation)
+      formatted = formatted.gsub(/(&lt;!--.+?--&gt;)/, '<span class="text-gray-500 italic">\1</span>') # HTML comments
+      formatted = formatted.gsub(/(#.+)$/, '<span class="text-gray-500 italic">\1</span>') # Ruby comments
 
       raw(formatted)
     end

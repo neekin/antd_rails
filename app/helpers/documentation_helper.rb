@@ -131,4 +131,21 @@ module DocumentationHelper
       <% end %>
     RUBY
   end
+
+  def modal_basic_code
+    <<~RUBY
+      <!-- Trigger Button -->
+      <button onclick="document.getElementById('my-modal').ant_modal_controller.open()" 
+              class="px-4 py-2 bg-blue-600 text-white rounded">
+        Open Modal
+      </button>
+
+      <!-- Modal Component -->
+      <%= ant_modal(title: "Basic Modal", id: "my-modal", open: false) do |modal| %>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      <% end %>
+    RUBY
+  end
 end

@@ -32,4 +32,8 @@ module AntHelper
   def ant_pagination(current_page: 1, total_count: 0, per_page: 10, **options)
     render Ant::PaginationComponent.new(current_page: current_page, total_count: total_count, per_page: per_page, **options)
   end
+
+  def ant_modal(title: nil, id: nil, open: false, **options, &block)
+    render Ant::ModalComponent.new(title: title, id: id, open: open, **options), &block
+  end
 end
