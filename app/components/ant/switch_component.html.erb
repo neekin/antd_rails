@@ -1,0 +1,38 @@
+<div class="inline-flex items-center <%= @html_options[:class] %>"
+     data-controller="ant--switch"
+     data-ant--switch-checked-value="<%= @checked %>"
+     data-ant--switch-disabled-value="<%= @disabled || @loading %>">
+  
+  <!-- Hidden Input -->
+  <input type="hidden" 
+         name="<%= @name %>" 
+         value="<%= @checked ? '1' : '0' %>" 
+         data-ant--switch-target="input"
+         <%= 'disabled' if @disabled %>>
+  
+  <!-- Switch Button -->
+  <button type="button"
+          data-action="click->ant--switch#toggle"
+          data-ant--switch-target="button"
+          class="<%= switch_classes %>"
+          <%= 'disabled' if @disabled || @loading %>
+          role="switch"
+          aria-checked="<%= @checked %>">
+    
+    <!-- Loading Icon or Text -->
+    <% if @loading %>
+      <span class="absolute inset-0 flex items-center justify-center">
+        <svg class="animate-spin text-white" width="12" height="12" viewBox="0 0 1024 1024" fill="currentColor">
+          <path d="M988 548c-19.9 0-36-16.1-36-36 0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 00-94.3-139.9 437.71 437.71 0 00-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.3C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3.1 19.9-16 36-35.9 36z"/>
+        </svg>
+      </span>
+    <% elsif @checked && @checked_text.present? %>
+      <span class="<%= text_classes %>"><%= @checked_text %></span>
+    <% elsif !@checked && @unchecked_text.present? %>
+      <span class="<%= text_classes %>"><%= @unchecked_text %></span>
+    <% end %>
+    
+    <!-- Handle (圆形滑块) -->
+    <span class="<%= handle_classes %>" data-ant--switch-target="handle"></span>
+  </button>
+</div>

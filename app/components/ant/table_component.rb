@@ -1,20 +1,46 @@
 module Ant
   class TableComponent < ViewComponent::Base
-    def initialize(collection, sticky_header: false, paginate: nil, **html_options)
+    attr_reader :row_selection
+
+    def initialize(collection,
+                   sticky_header: false,
+                   paginate: nil,
+                   loading: false,
+                   empty_text: "No Data",
+                   row_selection: nil,
+                   **html_options)
       @collection = collection
       @sticky_header = sticky_header
       @paginate = paginate
+      @loading = loading
+      @empty_text = empty_text
+      @row_selection = row_selection
       @html_options = html_options
       @columns = []
     end
 
-    def column(header, sticky: nil, **html_options, &block)
-      @columns << { 
-        header: header, 
-        sticky: sticky, 
-        html_options: html_options, 
-        block: block 
+    def column(header, sticky: nil, sortable: false, filterable: false, filters: nil, **html_options, &block)
+      @columns << {
+        header: header,
+        sticky: sticky,
+        sortable: sortable,
+        filterable: filterable,
+        filters: filters,
+        html_options: html_options,
+        block: block
       }
+    end
+
+    def has_selection?
+      @row_selection.present?
+    end
+
+    def is_empty?
+      @collection.blank?
+    end
+
+    def is_loading?
+      @loading
     end
 
     def before_render

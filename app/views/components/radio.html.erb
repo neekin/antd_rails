@@ -1,0 +1,116 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Radio 单选框",
+  description: "单选框。",
+  when_to_use: [
+    "用于在多个备选项中选中单个状态。",
+    "和 Select 的区别是，Radio 所有选项默认可见，方便用户在比较中选择，因此选项不宜过多。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本",
+  description: "最简单的用法。",
+  language: :erb,
+  code: radio_basic_code
+) do %>
+  <div class="flex items-center gap-4">
+    <%= ant_radio name: "choice", value: "1", checked: true do %>
+      Option 1
+    <% end %>
+    <%= ant_radio name: "choice", value: "2" do %>
+      Option 2
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "不可用",
+  description: "Radio 不可用。",
+  language: :erb,
+  code: radio_disabled_code
+) do %>
+  <div class="flex items-center gap-4">
+    <%= ant_radio name: "disabled_choice", value: "1", checked: true, disabled: true do %>
+      Disabled Selected
+    <% end %>
+    <%= ant_radio name: "disabled_choice", value: "2", disabled: true do %>
+      Disabled Unselected
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "单选组合",
+  description: "一组互斥的 Radio 配合使用。",
+  language: :erb,
+  code: radio_group_code
+) do %>
+  <div class="space-y-2">
+    <%= ant_radio name: "plan", value: "basic", checked: true do %>
+      <span class="font-medium">Basic</span> - Free
+    <% end %>
+    <%= ant_radio name: "plan", value: "pro" do %>
+      <span class="font-medium">Pro</span> - $9.99/month
+    <% end %>
+    <%= ant_radio name: "plan", value: "enterprise" do %>
+      <span class="font-medium">Enterprise</span> - Contact us
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "大小",
+  description: "大中小三种组合，可以和表单输入框进行对应配合。",
+  language: :erb,
+  code: radio_size_code
+) do %>
+  <div class="flex items-center gap-4">
+    <%= ant_radio name: "size_small", value: "1", checked: true, size: :small do %>
+      Small
+    <% end %>
+    <%= ant_radio name: "size_default", value: "1", checked: true, size: :default do %>
+      Default
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "按钮样式",
+  description: "按钮样式的单选组合。",
+  language: :erb,
+  code: radio_button_style_code
+) do %>
+  <div class="inline-flex border border-gray-300 rounded-md overflow-hidden">
+    <%= ant_radio name: "view", value: "list", checked: true, class: "px-4 py-2 hover:bg-gray-50 border-r border-gray-300 rounded-none" do %>
+      List
+    <% end %>
+    <%= ant_radio name: "view", value: "grid", class: "px-4 py-2 hover:bg-gray-50 border-r border-gray-300 rounded-none" do %>
+      Grid
+    <% end %>
+    <%= ant_radio name: "view", value: "kanban", class: "px-4 py-2 hover:bg-gray-50 rounded-none" do %>
+      Kanban
+    <% end %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "name", "表单字段名称（必填）", "String", "-" %>
+  <% api.row "value", "根据 value 进行比较，判断是否选中（必填）", "String", "-" %>
+  <% api.row "checked", "指定当前是否选中", "Boolean", "false" %>
+  <% api.row "disabled", "是否禁用", "Boolean", "false" %>
+  <% api.row "size", "大小，可选值：:default, :small", "Symbol", ":default" %>
+  <% api.row "class", "自定义样式类名", "String", "nil" %>
+<% end %>
+
+<div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+  <h4 class="text-sm font-semibold text-blue-900 mb-2">💡 提示</h4>
+  <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
+    <li>Radio 使用 <code class="px-1 py-0.5 bg-blue-100 rounded">name</code> 属性将多个单选框分组</li>
+    <li>同一组的 Radio <code class="px-1 py-0.5 bg-blue-100 rounded">name</code> 值必须相同</li>
+    <li>可以监听 <code class="px-1 py-0.5 bg-blue-100 rounded">radio:change</code> 事件获取选择变化</li>
+    <li>使用 block 传递标签内容，支持纯文本或 HTML 内容</li>
+  </ul>
+</div>

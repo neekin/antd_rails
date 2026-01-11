@@ -1,0 +1,135 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Checkbox 多选框",
+  description: "多选框。",
+  when_to_use: [
+    "在一组可选项中进行多项选择时。",
+    "单独使用可以表示两种状态之间的切换，和 switch 类似。区别在于切换 switch 会直接触发状态改变，而 checkbox 一般用于状态标记，需要和提交操作配合。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本",
+  description: "最简单的用法。",
+  language: :erb,
+  code: checkbox_basic_code
+) do %>
+  <div>
+    <%= ant_checkbox name: "agree", checked: true do %>
+      I agree to the terms
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "不可用",
+  description: "Checkbox 不可用。",
+  language: :erb,
+  code: checkbox_disabled_code
+) do %>
+  <div class="flex items-center gap-4">
+    <%= ant_checkbox name: "disabled_unchecked", disabled: true do %>
+      Disabled Unchecked
+    <% end %>
+    <%= ant_checkbox name: "disabled_checked", checked: true, disabled: true do %>
+      Disabled Checked
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "多选框组",
+  description: "一组配合使用的多选框。",
+  language: :erb,
+  code: checkbox_group_code
+) do %>
+  <div class="space-y-2">
+    <%= ant_checkbox name: "features[]", value: "notifications", checked: true do %>
+      Notifications
+    <% end %>
+    <%= ant_checkbox name: "features[]", value: "newsletter" do %>
+      Newsletter
+    <% end %>
+    <%= ant_checkbox name: "features[]", value: "updates" do %>
+      Product Updates
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "全选",
+  description: "在实现全选效果时，你可能会用到 indeterminate 属性。",
+  language: :erb,
+  code: checkbox_indeterminate_code
+) do %>
+  <div class="space-y-3" data-controller="checkbox-group">
+    <%= ant_checkbox name: "select_all", class: "font-medium", 
+        data: { 
+          "checkbox-group-target": "selectAll", 
+          action: "change->checkbox-group#toggleSelectAll" 
+        } do %>
+      <span class="font-medium">Select All</span>
+    <% end %>
+    <div class="ml-6 space-y-2 border-l-2 border-gray-200 pl-4">
+      <%= ant_checkbox name: "items[]", value: "apple", checked: true,
+          data: { 
+            "checkbox-group-target": "item", 
+            action: "change->checkbox-group#toggleItem" 
+          } do %>
+        Apple
+      <% end %>
+      <%= ant_checkbox name: "items[]", value: "orange",
+          data: { 
+            "checkbox-group-target": "item", 
+            action: "change->checkbox-group#toggleItem" 
+          } do %>
+        Orange
+      <% end %>
+      <%= ant_checkbox name: "items[]", value: "banana",
+          data: { 
+            "checkbox-group-target": "item", 
+            action: "change->checkbox-group#toggleItem" 
+          } do %>
+        Banana
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "大小",
+  description: "两种大小的多选框。",
+  language: :erb,
+  code: checkbox_size_code
+) do %>
+  <div class="flex items-center gap-4">
+    <%= ant_checkbox name: "small_checkbox", checked: true, size: :small do %>
+      Small
+    <% end %>
+    <%= ant_checkbox name: "default_checkbox", checked: true, size: :default do %>
+      Default
+    <% end %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "name", "表单字段名称（必填）", "String", "-" %>
+  <% api.row "value", "选项值", "String", "\"1\"" %>
+  <% api.row "checked", "指定当前是否选中", "Boolean", "false" %>
+  <% api.row "disabled", "是否禁用", "Boolean", "false" %>
+  <% api.row "indeterminate", "设置 indeterminate 状态，只负责样式控制", "Boolean", "false" %>
+  <% api.row "size", "大小，可选值：:default, :small", "Symbol", ":default" %>
+  <% api.row "class", "自定义样式类名", "String", "nil" %>
+<% end %>
+
+<div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+  <h4 class="text-sm font-semibold text-blue-900 mb-2">💡 提示</h4>
+  <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
+    <li>Checkbox 组使用数组命名（如 <code class="px-1 py-0.5 bg-blue-100 rounded">name="features[]"</code>）以收集多个值</li>
+    <li>可以监听 <code class="px-1 py-0.5 bg-blue-100 rounded">checkbox:change</code> 事件获取状态变化</li>
+    <li>indeterminate 属性用于表示"部分选中"状态，常用于全选功能</li>
+    <li>使用 block 传递标签内容，支持纯文本或 HTML 内容</li>
+  </ul>
+</div>

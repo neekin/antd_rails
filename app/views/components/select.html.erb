@@ -3,7 +3,9 @@
   description: "下拉选择器。",
   when_to_use: [
     "弹出一个下拉菜单给用户选择操作。",
-    "当选项过多时，使用下拉菜单展示并选择内容。"
+    "当选项过多时，使用下拉菜单展示并选择内容。",
+    "需要从大量选项中筛选时，使用搜索功能。",
+    "需要多选时，使用多选模式。"
   ]
 ) %>
 
@@ -11,6 +13,7 @@
 
 <%= render Ui::ExampleComponent.new(
   title: "基本使用",
+  description: "基础的单选下拉框。",
   language: :erb,
   code: select_basic_code
 ) do %>
@@ -20,7 +23,83 @@
 <% end %>
 
 <%= render Ui::ExampleComponent.new(
+  title: "自定义选项",
+  description: "使用 [label, value] 数组自定义显示文本和值。",
+  language: :erb,
+  code: select_custom_code
+) do %>
+  <div class="max-w-sm">
+    <%= ant_select name: "user[role]", 
+                   options: [["管理员", "admin"], ["编辑", "editor"], ["访客", "guest"]], 
+                   selected: "editor",
+                   class: "w-full" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "带搜索",
+  description: "展开下拉菜单后可以搜索选项，适用于选项较多的场景。",
+  language: :erb,
+  code: select_searchable_code
+) do %>
+  <div class="max-w-sm">
+    <%= ant_select name: "country", 
+                   options: [["中国", "cn"], ["美国", "us"], ["日本", "jp"], ["英国", "uk"], ["法国", "fr"]], 
+                   searchable: true,
+                   placeholder: "Search to Select" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "多选",
+  description: "多选模式，选中的选项会以标签形式展示。",
+  language: :erb,
+  code: select_multiple_code
+) do %>
+  <div class="max-w-sm">
+    <%= ant_select name: "tags[]", 
+                   options: ["Ruby", "Rails", "JavaScript", "React", "Vue", "TypeScript"], 
+                   multiple: true,
+                   selected: ["Ruby", "Rails"],
+                   placeholder: "Please select" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "多选 + 搜索 + 标签限制",
+  description: "结合搜索功能的多选，使用 max_tag_count 限制显示的标签数量。",
+  language: :erb,
+  code: select_multiple_search_code
+) do %>
+  <div class="max-w-sm">
+    <%= ant_select name: "skills[]", 
+                   options: ["Ruby", "Rails", "JavaScript", "React", "Vue", "TypeScript", "Python", "Django", "Go", "Java"], 
+                   multiple: true,
+                   searchable: true,
+                   selected: ["Ruby", "Rails", "JavaScript", "React"],
+                   max_tag_count: 3,
+                   placeholder: "Select skills" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "加载中状态",
+  description: "异步加载数据时显示加载状态。",
+  language: :erb,
+  code: select_loading_code
+) do %>
+  <div class="max-w-sm">
+    <%= ant_select name: "city", 
+                   options: ["北京", "上海", "广州", "深圳"], 
+                   loading: true,
+                   searchable: true,
+                   placeholder: "Loading..." %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
   title: "禁用状态",
+  description: "禁用状态的选择器。",
   language: :erb,
   code: select_disabled_code
 ) do %>
@@ -31,10 +110,15 @@
 
 <h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
 <%= render Ui::ApiTableComponent.new do |api| %>
-  <% api.row "name", "Select 控件名称", "String", "nil" %>
-  <% api.row "options", "选项数据源。支持 Array (`['A', 'B']`) 或 Hash (`{'Label' => 'Value'}`)，推荐配合 `options_for_select` 使用", "Array | Hash", "[]" %>
-  <% api.row "selected", "当前选中的值 (Value)", "String | Integer", "nil" %>
+  <% api.row "name", "表单字段名称。多选时使用 `name[]` 格式", "String", "nil" %>
+  <% api.row "options", "选项数据源。支持 `['A', 'B']` 或 `[['Label', 'Value']]` 格式", "Array", "[]" %>
+  <% api.row "selected", "默认选中的值。多选时传入数组", "String | Array", "nil" %>
+  <% api.row "placeholder", "占位符文本", "String", "'Please select'" %>
   <% api.row "disabled", "是否禁用选择器", "Boolean", "false" %>
+  <% api.row "multiple", "是否支持多选", "Boolean", "false" %>
+  <% api.row "searchable", "是否支持搜索", "Boolean", "false" %>
+  <% api.row "loading", "是否显示加载状态", "Boolean", "false" %>
+  <% api.row "max_tag_count", "多选时最多显示的标签数量，超出显示 +N", "Integer", "nil" %>
   <% api.row "class", "自定义样式类名", "String", "nil" %>
-  <% api.row "html_options", "其他标准 select 属性 (如 multiple, include_blank)", "Hash", "{}" %>
+  <% api.row "html_options", "其他 HTML 属性", "Hash", "{}" %>
 <% end %>

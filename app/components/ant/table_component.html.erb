@@ -1,43 +1,152 @@
-<div class="relative flex flex-col border border-[#f0f0f0] rounded-lg bg-white <%= @html_options[:class] %>">
+<div class="relative flex flex-col border border-[#f0f0f0] rounded-lg bg-white <%= @html_options[:class] %>" data-controller="ant--table">
+  <!-- Loading Overlay -->
+  <% if is_loading? %>
+    <div class="absolute inset-0 bg-white/70 flex items-center justify-center z-50 rounded-lg">
+      <div class="flex flex-col items-center gap-2">
+        <div class="w-8 h-8 border-4 border-[#1677ff] border-t-transparent rounded-full animate-spin"></div>
+        <span class="text-sm text-gray-500">Loading...</span>
+      </div>
+    </div>
+  <% end %>
+
   <!-- Table Container (Scrollable) -->
-  <div class="<%= @sticky_header ? 'max-h-[500px] overflow-auto' : 'overflow-x-auto' %> rounded-t-lg isolate">
-    <table class="min-w-full text-left text-sm whitespace-nowrap border-collapse">
+  <div class="<%= @sticky_header ? 'max-h-[500px] overflow-auto' : 'overflow-x-auto overflow-y-hidden' %> rounded-t-lg isolate">
+    <table class="w-full text-left text-sm whitespace-nowrap border-collapse">
       <thead class="bg-[#fafafa] border-b border-[#f0f0f0] <%= 'sticky top-0 z-30 shadow-sm' if @sticky_header %>">
         <tr>
+          <!-- Selection Column -->
+          <% if has_selection? %>
+            <th scope="col" class="px-4 py-3 w-12 <%= 'sticky left-0 z-40 bg-[#fafafa]' if @sticky_header %>">
+              <input 
+                type="checkbox" 
+                class="w-4 h-4 rounded border-gray-300 text-[#1677ff] focus:ring-[#1677ff]"
+                data-ant--table-target="selectAll"
+                data-action="change->ant--table#toggleSelectAll"
+              />
+            </th>
+          <% end %>
+          
           <% @columns.each_with_index do |col, index| %>
             <% 
                sticky_class = ""
-               # Sticky Header Cell needs higher z-index (40) than Sticky Body Cell (20)
                if col[:sticky] == :left
                  sticky_class = "sticky left-0 z-40 bg-[#fafafa] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
                elsif col[:sticky] == :right
                  sticky_class = "sticky right-0 z-40 bg-[#fafafa] shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]"
                end
             %>
-            <th scope="col" class="px-4 py-3 font-semibold text-gray-900 <%= col[:html_options][:class] %> <%= sticky_class %>">
-              <%= col[:header] %>
+            <th scope="col" class="px-4 py-3 font-semibold text-gray-900 <%= col[:html_options][:class] %> <%= sticky_class %> relative group">
+              <div class="flex items-center gap-2">
+                <% if col[:sortable] %>
+                  <span class="cursor-pointer select-none flex items-center gap-2" 
+                        data-sortable="true" 
+                        data-column="<%= col[:header] %>" 
+                        data-direction="none"
+                        data-action="click->ant--table#sort">
+                    <%= col[:header] %>
+                    <!-- Sort Icon -->
+                    <span class="inline-flex" data-ant--table-target="sortIcon">
+                      <svg class="w-3 h-3" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 3L12 7H4L8 3Z" class="text-gray-400 transition-colors" fill="currentColor"/>
+                        <path d="M8 13L4 9H12L8 13Z" class="text-gray-400 transition-colors" fill="currentColor"/>
+                      </svg>
+                    </span>
+                  </span>
+                <% else %>
+                  <span><%= col[:header] %></span>
+                <% end %>
+                
+                <!-- Filter Icon -->
+                <% if col[:filterable] && col[:filters] %>
+                  <div class="relative">
+                    <button type="button" 
+                            class="inline-flex opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-[#1677ff]"
+                            data-column="<%= col[:header] %>"
+                            data-action="click->ant--table#toggleFilter">
+                      <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    
+                    <!-- Filter Dropdown -->
+                    <div class="hidden absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-[60] min-w-[120px]"
+                         data-ant--table-target="filterDropdown"
+                         data-column="<%= col[:header] %>">
+                      <div class="py-1">
+                        <% col[:filters].each do |filter| %>
+                          <button type="button"
+                                  class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50"
+                                  data-column="<%= col[:header] %>"
+                                  data-value="<%= filter[:value] %>"
+                                  data-action="click->ant--table#applyFilter">
+                            <%= filter[:text] %>
+                          </button>
+                        <% end %>
+                        <div class="border-t border-gray-200 mt-1 pt-1">
+                          <button type="button"
+                                  class="w-full px-4 py-2 text-left text-sm text-gray-500 hover:bg-gray-50"
+                                  data-column="<%= col[:header] %>"
+                                  data-action="click->ant--table#clearFilter">
+                            Clear
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
             </th>
           <% end %>
         </tr>
       </thead>
       <tbody class="divide-y divide-[#f0f0f0] bg-white">
-        <% @collection.each do |item| %>
-          <tr class="hover:bg-[#fafafa] transition-colors group">
-            <% @columns.each do |col| %>
-              <% 
-                 sticky_td_class = ""
-                 # Sticky Body Cell needs lower z-index (20) than Header
-                 if col[:sticky] == :left
-                   sticky_td_class = "sticky left-0 z-20 bg-white group-hover:bg-[#fafafa] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
-                 elsif col[:sticky] == :right
-                   sticky_td_class = "sticky right-0 z-20 bg-white group-hover:bg-[#fafafa] shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]"
-                 end
-              %>
-              <td class="px-4 py-3 text-gray-700 <%= col[:html_options][:class] %> <%= sticky_td_class %>">
-                <%= view_context.capture(item, &col[:block]) %>
-              </td>
-            <% end %>
+        <% if is_empty? %>
+          <!-- Empty State -->
+          <tr>
+            <td colspan="<%= @columns.size + (has_selection? ? 1 : 0) %>" class="px-4 py-12 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <svg class="w-16 h-16 text-gray-300" viewBox="0 0 64 64" fill="none">
+                  <rect x="8" y="16" width="48" height="40" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <line x1="8" y1="24" x2="56" y2="24" stroke="currentColor" stroke-width="2"/>
+                  <line x1="16" y1="32" x2="48" y2="32" stroke="currentColor" stroke-width="2"/>
+                  <line x1="16" y1="40" x2="48" y2="40" stroke="currentColor" stroke-width="2"/>
+                  <line x1="16" y1="48" x2="32" y2="48" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <div class="text-gray-500 text-sm"><%= @empty_text %></div>
+              </div>
+            </td>
           </tr>
+        <% else %>
+          <% @collection.each_with_index do |item, row_index| %>
+            <tr class="hover:bg-[#fafafa] transition-colors group">
+              <!-- Selection Column -->
+              <% if has_selection? %>
+                <td class="px-4 py-3 <%= 'sticky left-0 z-20 bg-white group-hover:bg-[#fafafa]' if @sticky_header %>">
+                  <input 
+                    type="checkbox" 
+                    class="w-4 h-4 rounded border-gray-300 text-[#1677ff] focus:ring-[#1677ff]"
+                    value="<%= row_selection[:get_row_key]&.call(item) || row_index %>"
+                    data-ant--table-target="selectRow"
+                    data-action="change->ant--table#toggleSelectRow"
+                  />
+                </td>
+              <% end %>
+              
+              <% @columns.each do |col| %>
+                <% 
+                   sticky_td_class = ""
+                   if col[:sticky] == :left
+                     sticky_td_class = "sticky left-0 z-20 bg-white group-hover:bg-[#fafafa] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                   elsif col[:sticky] == :right
+                     sticky_td_class = "sticky right-0 z-20 bg-white group-hover:bg-[#fafafa] shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                   end
+                %>
+                <td class="px-4 py-3 text-gray-700 <%= col[:html_options][:class] %> <%= sticky_td_class %>">
+                  <%= view_context.capture(item, &col[:block]) %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
         <% end %>
       </tbody>
     </table>

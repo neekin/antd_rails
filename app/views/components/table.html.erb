@@ -4,6 +4,19 @@
   when_to_use: ["当有大量结构化的数据需要展现时。", "需要对数据进行排序、搜索、分页、自定义操作等复杂行为时。"]
 ) %>
 
+<div class="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+  <div class="flex items-center justify-between">
+    <div>
+      <h4 class="font-semibold text-blue-900 mb-1">🚀 完整交互示例</h4>
+      <p class="text-sm text-blue-700">查看带有排序、筛选和行选择的完整可交互示例</p>
+    </div>
+    <%= link_to table_demo_path, 
+                class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium" do %>
+      查看实际示例 →
+    <% end %>
+  </div>
+</div>
+
 <% 
    user_struct = Struct.new(:id, :name, :role, :status, :email, :phone, :address)
    users = [
@@ -58,35 +71,169 @@
 
 <%= render Ui::ExampleComponent.new(
   title: "高级特性：固定表头、列固定与分页",
-  description: "支持 sticky_header, sticky: :left/:right 以及分页插槽。点击分页按钮查看 URL 变化。",
+  description: "支持 sticky_header, sticky: :left/:right 以及分页插槽。横向滚动查看固定列效果。",
   language: :erb,
   code: table_advanced_code
 ) do %>
-  <div class="max-w-full">
+  <div class="w-full max-w-[800px]">
     <%= ant_table(paged_users, sticky_header: true, paginate: ant_pagination(current_page: current_page, total_count: total_count, per_page: per_page)) do |t| %>
-       <% t.column "ID", sticky: :left, class: "w-16 font-mono text-center border-r border-gray-200" do |u| %>
+       <% t.column "ID", sticky: :left, class: "w-20 font-mono text-center border-r border-gray-200" do |u| %>
          <%= u.id %>
        <% end %>
-       <% t.column "Name", class: "w-40 font-medium" do |u| %>
+       <% t.column "Name", class: "w-48 font-medium" do |u| %>
          <%= u.name %>
        <% end %>
-       <% t.column "Email", class: "w-48" do |u| %>
+       <% t.column "Email", class: "w-56" do |u| %>
          <%= u.email %>
        <% end %>
-       <% t.column "Address (Long Content)", class: "w-[300px]" do |u| %>
+       <% t.column "Phone", class: "w-40" do |u| %>
+         <%= u.phone %>
+       <% end %>
+       <% t.column "Address (Long Content)", class: "w-[400px]" do |u| %>
          <%= u.address %>
        <% end %>
-       <% t.column "Action", sticky: :right, class: "w-20 text-center border-l border-gray-200" do |u| %>
+       <% t.column "Action", sticky: :right, class: "w-24 text-center border-l border-gray-200" do |u| %>
          <a href="#" class="text-blue-600 font-medium">Edit</a>
        <% end %>
     <% end %>
   </div>
 <% end %>
 
+<%
+  # 生成丰富的伪数据用于排序和筛选演示
+  names = ["Alice Wang", "Bob Chen", "Carol Liu", "David Zhang", "Eve Li", "Frank Wu", 
+           "Grace Xu", "Henry Zhou", "Iris Wang", "Jack Liu", "Kelly Chen", "Leo Zhang",
+           "Mary Li", "Nancy Wu", "Oscar Xu", "Peter Wang", "Quinn Chen", "Rose Liu",
+           "Steve Zhang", "Tina Li", "Uma Wu", "Victor Xu", "Wendy Wang", "Xavier Chen"]
+  
+  sortable_users = names.each_with_index.map do |name, i|
+    roles = ["Developer", "Designer", "Manager"]
+    statuses = [:success, :processing, :error]
+    user_struct.new(
+      i + 1, 
+      name, 
+      roles[i % 3], 
+      statuses[i % 3], 
+      "#{name.split.first.downcase}@example.com",
+      "555-#{1000 + i}",
+      "Address #{i + 1}"
+    )
+  end
+%>
+
+<%= render Ui::ExampleComponent.new(
+  title: "排序、筛选与行选择（可交互）",
+  description: "这是一个完全可交互的示例。点击列标题排序，点击筛选图标筛选，勾选复选框选择行。打开控制台查看事件详情。",
+  language: :erb,
+  code: table_sortable_code
+) do %>
+  <div data-controller="table-demo" data-table-demo-initial-data-value="<%= sortable_users.to_json %>">
+    <div class="mb-4 flex items-center gap-4">
+      <div class="text-sm text-gray-600">
+        <span class="font-semibold">总计:</span> <span data-table-demo-target="totalCount"><%= sortable_users.size %></span> 条
+      </div>
+      <div class="text-sm text-gray-600" data-table-demo-target="filterInfo">
+        <span class="font-semibold">筛选:</span> 无
+      </div>
+      <div class="text-sm text-gray-600" data-table-demo-target="sortInfo">
+        <span class="font-semibold">排序:</span> 无
+      </div>
+    </div>
+    
+    <!-- 批量操作工具栏 -->
+    <div data-table-demo-target="toolbar" 
+         class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg hidden">
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-semibold text-blue-900" data-table-demo-target="selectionInfo">
+          已选择 0 项
+        </span>
+        <button class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                data-action="click->table-demo#batchDelete">
+          批量删除
+        </button>
+        <button class="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                data-action="click->table-demo#batchExport">
+          批量导出
+        </button>
+      </div>
+    </div>
+
+    <div data-table-demo-target="tableContainer">
+      <%= ant_table(sortable_users, 
+                    row_selection: { get_row_key: ->(user) { user.id } }) do |t| %>
+         <% t.column "ID", class: "w-16 font-mono", sortable: true do |u| %>
+           <%= u.id %>
+         <% end %>
+         <% t.column "Name", class: "font-medium", sortable: true do |u| %>
+           <%= u.name %>
+         <% end %>
+         <% t.column "Role", filterable: true, filters: [
+              { text: "Developer", value: "Developer" },
+              { text: "Designer", value: "Designer" },
+              { text: "Manager", value: "Manager" }
+            ] do |u| %>
+           <%= ant_tag u.role %>
+         <% end %>
+         <% t.column "Status", filterable: true, filters: [
+              { text: "Success", value: "success" },
+              { text: "Processing", value: "processing" },
+              { text: "Error", value: "error" }
+            ] do |u| %>
+           <%= ant_tag "Active", color: u.status %>
+         <% end %>
+         <% t.column "Email", class: "text-sm text-gray-600" do |u| %>
+           <%= u.email %>
+         <% end %>
+         <% t.column "Action", class: "text-blue-600" do |u| %>
+           <a href="#" class="hover:underline">编辑</a>
+         <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "加载状态",
+  description: "显示加载中的状态。",
+  language: :erb,
+  code: table_loading_code
+) do %>
+  <%= ant_table(users, loading: true) do |t| %>
+     <% t.column "ID", class: "w-20" do |u| %>
+       <%= u.id %>
+     <% end %>
+     <% t.column "Name" do |u| %>
+       <%= u.name %>
+     <% end %>
+     <% t.column "Role" do |u| %>
+       <%= ant_tag u.role %>
+     <% end %>
+  <% end %>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "空状态",
+  description: "当没有数据时显示空状态。",
+  language: :erb,
+  code: table_empty_code
+) do %>
+  <%= ant_table([], empty_text: "暂无数据") do |t| %>
+     <% t.column "ID" do |u| %>
+       <%= u.id %>
+     <% end %>
+     <% t.column "Name" do |u| %>
+       <%= u.name %>
+     <% end %>
+  <% end %>
+<% end %>
+
 <h3 class="text-xl font-bold text-gray-800 mb-4 mt-12 border-b pb-2 text-pink-600">API</h3>
 <%= render Ui::ApiTableComponent.new do |api| %>
   <% api.row "collection", "要渲染的数据集合 (Enumerable)", "Array | ActiveRecord::Relation", "required" %>
   <% api.row "sticky_header", "是否开启固定表头。开启后表格高度固定并支持纵向滚动", "Boolean", "false" %>
+  <% api.row "loading", "是否显示加载状态", "Boolean", "false" %>
+  <% api.row "empty_text", "空状态提示文字", "String", "\"No Data\"" %>
+  <% api.row "row_selection", "行选择配置。传入 { get_row_key: lambda } 来指定行的唯一标识", "Hash", "nil" %>
   <% api.row "paginate", "分页内容插槽。通常配合 `ant_pagination` 使用", "HTML String | Component", "nil" %>
   <% api.row "class", "外层容器自定义 CSS 类", "String", "nil" %>
 <% end %>
@@ -97,6 +244,229 @@
 <%= render Ui::ApiTableComponent.new do |api| %>
   <% api.row "header", "列标题", "String", "required" %>
   <% api.row "sticky", "列固定方向。开启后横向滚动时该列将固定", "Symbol (:left | :right)", "nil" %>
+  <% api.row "sortable", "是否支持排序。开启后列标题可点击排序", "Boolean", "false" %>
+  <% api.row "filterable", "是否支持筛选。需配合 filters 参数使用", "Boolean", "false" %>
+  <% api.row "filters", "筛选选项数组。格式：[{ text: '显示文本', value: '值' }]", "Array", "nil" %>
   <% api.row "class", "列（th/td）的自定义 CSS 类", "String", "nil" %>
-  <% api.row "block", "列内容渲染 Block，接收当前行对象 item", "Block(item)", "required" %>
 <% end %>
+
+<h4 class="font-bold text-gray-700 mt-10 mb-4">事件</h4>
+<div class="bg-gray-50 p-4 rounded-lg">
+  <div class="space-y-2 text-sm">
+    <div><code class="px-2 py-1 bg-white rounded">ant--table:sort</code> - 排序事件，detail: { column, direction }</div>
+    <div><code class="px-2 py-1 bg-white rounded">ant--table:filter</code> - 筛选事件，detail: { column, value }</div>
+    <div><code class="px-2 py-1 bg-white rounded">ant--table:filterClear</code> - 清除筛选事件，detail: { column }</div>
+    <div><code class="px-2 py-1 bg-white rounded">ant--table:selectionChange</code> - 行选择变化事件，detail: { selectedRows }</div>
+  </div>
+</div>
+
+<h4 class="font-bold text-gray-700 mt-10 mb-4">后台交互示例</h4>
+<div class="bg-gray-50 p-4 rounded-lg space-y-4">
+  <div>
+    <h5 class="font-semibold text-gray-800 mb-2">1. 使用 Turbo Frame 自动刷新（推荐）</h5>
+    <pre class="bg-white p-3 rounded border text-xs overflow-x-auto"><code>&lt;!-- View: app/views/users/index.html.erb --&gt;
+&lt;div data-controller="users-table"&gt;
+  &lt;%= turbo_frame_tag "users_table" do %&gt;
+    &lt;%= ant_table(@users, 
+                  row_selection: { get_row_key: ->(u) { u.id } }) do |t| %&gt;
+      &lt;% t.column "Name", sortable: true do |u| %&gt;
+        &lt;%= u.name %&gt;
+      &lt;% end %&gt;
+      &lt;% t.column "Role", filterable: true, 
+                   filters: [{ text: "Admin", value: "admin" }] do |u| %&gt;
+        &lt;%= u.role %&gt;
+      &lt;% end %&gt;
+    &lt;% end %&gt;
+  &lt;% end %&gt;
+&lt;/div&gt;
+
+&lt;!-- Controller: app/javascript/controllers/users_table_controller.js --&gt;
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  connect() {
+    this.element.addEventListener("ant--table:sort", this.handleSort.bind(this))
+    this.element.addEventListener("ant--table:filter", this.handleFilter.bind(this))
+  }
+
+  handleSort(event) {
+    const { column, direction } = event.detail
+    const url = new URL(window.location)
+    url.searchParams.set('sort_column', column)
+    url.searchParams.set('sort_direction', direction)
+    Turbo.visit(url.toString(), { frame: "users_table" })
+  }
+
+  handleFilter(event) {
+    const { column, value } = event.detail
+    const url = new URL(window.location)
+    url.searchParams.set(`filter_${column}`, value)
+    Turbo.visit(url.toString(), { frame: "users_table" })
+  }
+}
+
+# Backend: app/controllers/users_controller.rb
+def index
+  @users = User.all
+  
+  # 应用排序
+  if params[:sort_column].present? && params[:sort_direction] != 'none'
+    @users = @users.order("#{params[:sort_column]} #{params[:sort_direction]}")
+  end
+  
+  # 应用筛选
+  if params[:filter_Role].present?
+    @users = @users.where(role: params[:filter_Role])
+  end
+  
+  render partial: "users_table", locals: { users: @users } if turbo_frame_request?
+end</code></pre>
+  </div>
+
+  <div>
+    <h5 class="font-semibold text-gray-800 mb-2">2. 使用 Fetch API 手动更新</h5>
+    <pre class="bg-white p-3 rounded border text-xs overflow-x-auto"><code>&lt;!-- Controller: app/javascript/controllers/users_table_controller.js --&gt;
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = ["container"]
+  
+  connect() {
+    this.currentParams = { sort: {}, filters: {}, selectedIds: [] }
+    this.setupEventListeners()
+  }
+
+  setupEventListeners() {
+    this.element.addEventListener("ant--table:sort", this.handleSort.bind(this))
+    this.element.addEventListener("ant--table:filter", this.handleFilter.bind(this))
+    this.element.addEventListener("ant--table:filterClear", this.handleFilterClear.bind(this))
+    this.element.addEventListener("ant--table:selectionChange", this.handleSelection.bind(this))
+  }
+
+  async handleSort(event) {
+    const { column, direction } = event.detail
+    this.currentParams.sort = { column, direction }
+    await this.refreshTable()
+  }
+
+  async handleFilter(event) {
+    const { column, value } = event.detail
+    this.currentParams.filters[column] = value
+    await this.refreshTable()
+  }
+
+  async handleFilterClear(event) {
+    const { column } = event.detail
+    delete this.currentParams.filters[column]
+    await this.refreshTable()
+  }
+
+  handleSelection(event) {
+    const { selectedRows } = event.detail
+    this.currentParams.selectedIds = selectedRows
+    console.log("当前选中:", selectedRows)
+    // 可以在这里执行批量操作，如删除、导出等
+  }
+
+  async refreshTable() {
+    const params = new URLSearchParams()
+    
+    // 添加排序参数
+    if (this.currentParams.sort.direction !== 'none') {
+      params.append('sort_column', this.currentParams.sort.column)
+      params.append('sort_direction', this.currentParams.sort.direction)
+    }
+    
+    // 添加筛选参数
+    Object.entries(this.currentParams.filters).forEach(([key, value]) => {
+      params.append(`filter_${key}`, value)
+    })
+
+    try {
+      const response = await fetch(`/users?${params.toString()}`, {
+        headers: {
+          "Accept": "text/html",
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      })
+      
+      if (response.ok) {
+        const html = await response.text()
+        this.containerTarget.innerHTML = html
+      }
+    } catch (error) {
+      console.error("刷新表格失败:", error)
+    }
+  }
+}</code></pre>
+  </div>
+
+  <div>
+    <h5 class="font-semibold text-gray-800 mb-2">3. 批量操作示例</h5>
+    <pre class="bg-white p-3 rounded border text-xs overflow-x-auto"><code>&lt;div data-controller="users-batch"&gt;
+  &lt;div class="mb-4" data-users-batch-target="toolbar" style="display: none;"&gt;
+    &lt;%= ant_button "批量删除", 
+                   color: :danger,
+                   data: { action: "click->users-batch#deleteSelected" } %&gt;
+    &lt;%= ant_button "批量导出", 
+                   data: { action: "click->users-batch#exportSelected" } %&gt;
+    &lt;span data-users-batch-target="count"&gt;已选择 0 项&lt;/span&gt;
+  &lt;/div&gt;
+  
+  &lt;%= ant_table(@users, 
+                row_selection: { get_row_key: ->(u) { u.id } }) do |t| %&gt;
+    &lt;!-- 列定义 --&gt;
+  &lt;% end %&gt;
+&lt;/div&gt;
+
+&lt;!-- Controller: app/javascript/controllers/users_batch_controller.js --&gt;
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = ["toolbar", "count"]
+  
+  connect() {
+    this.selectedIds = []
+    this.element.addEventListener("ant--table:selectionChange", this.handleSelection.bind(this))
+  }
+
+  handleSelection(event) {
+    this.selectedIds = event.detail.selectedRows
+    
+    // 显示/隐藏工具栏
+    if (this.selectedIds.length > 0) {
+      this.toolbarTarget.style.display = 'block'
+      this.countTarget.textContent = `已选择 ${this.selectedIds.length} 项`
+    } else {
+      this.toolbarTarget.style.display = 'none'
+    }
+  }
+
+  async deleteSelected() {
+    if (!confirm(`确定删除选中的 ${this.selectedIds.length} 项吗？`)) return
+    
+    try {
+      const response = await fetch('/users/batch_delete', {
+        method: 'DELETE',
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": document.querySelector("[name='csrf-token']").content
+        },
+        body: JSON.stringify({ ids: this.selectedIds })
+      })
+      
+      if (response.ok) {
+        Turbo.visit(window.location, { action: "replace" })
+      }
+    } catch (error) {
+      console.error("删除失败:", error)
+    }
+  }
+
+  async exportSelected() {
+    const params = new URLSearchParams({ ids: this.selectedIds })
+    window.location.href = `/users/export?${params.toString()}`
+  }
+}</code></pre>
+  </div>
+</div>

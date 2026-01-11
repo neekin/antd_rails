@@ -1,0 +1,89 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Switch 开关",
+  description: "开关选择器。",
+  when_to_use: [
+    "需要表示开关状态/两种状态之间的切换时。",
+    "和 checkbox 的区别是，切换 switch 会直接触发状态改变，而 checkbox 一般用于状态标记，需要和提交操作配合。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本",
+  description: "最简单的用法。",
+  language: :erb,
+  code: switch_basic_code
+) do %>
+  <div>
+    <%= ant_switch name: "notifications", checked: true %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "不可用",
+  description: "Switch 失效状态。",
+  language: :erb,
+  code: switch_disabled_code
+) do %>
+  <div class="flex items-center gap-4">
+    <%= ant_switch name: "disabled_off", checked: false, disabled: true %>
+    <%= ant_switch name: "disabled_on", checked: true, disabled: true %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "文字和图标",
+  description: "带有文字和图标。",
+  language: :erb,
+  code: switch_text_code
+) do %>
+  <div>
+    <%= ant_switch name: "with_text", checked: true, checked_text: "开", unchecked_text: "关" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "加载中",
+  description: "标识开关操作仍在执行中。",
+  language: :erb,
+  code: switch_loading_code
+) do %>
+  <div class="flex items-center gap-4">
+    <%= ant_switch name: "loading_off", checked: false, loading: true %>
+    <%= ant_switch name: "loading_on", checked: true, loading: true %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "两种大小",
+  description: "size=\"small\" 表示小号开关。",
+  language: :erb,
+  code: switch_size_code
+) do %>
+  <div class="flex items-center gap-4">
+    <%= ant_switch name: "small_switch", checked: true, size: :small %>
+    <%= ant_switch name: "default_switch", checked: true, size: :default %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "name", "表单字段名称", "String", "nil" %>
+  <% api.row "checked", "指定当前是否选中", "Boolean", "false" %>
+  <% api.row "disabled", "是否禁用", "Boolean", "false" %>
+  <% api.row "loading", "加载中的开关", "Boolean", "false" %>
+  <% api.row "size", "开关大小，可选值：:default, :small", "Symbol", ":default" %>
+  <% api.row "checked_text", "选中时的内容", "String", "nil" %>
+  <% api.row "unchecked_text", "非选中时的内容", "String", "nil" %>
+  <% api.row "class", "自定义样式类名", "String", "nil" %>
+<% end %>
+
+<div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+  <h4 class="text-sm font-semibold text-blue-900 mb-2">💡 提示</h4>
+  <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
+    <li>Switch 提交的值为 "1"（选中）或 "0"（未选中）</li>
+    <li>可以监听 <code class="px-1 py-0.5 bg-blue-100 rounded">switch:change</code> 事件获取状态变化</li>
+    <li>加载状态下开关不可点击</li>
+  </ul>
+</div>

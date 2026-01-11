@@ -1,0 +1,26 @@
+<label class="<%= checkbox_classes %>" data-controller="ant--checkbox">
+  <input
+    type="checkbox"
+    name="<%= @name %>"
+    value="<%= @value %>"
+    <%= "checked" if @checked %>
+    <%= "disabled" if @disabled %>
+    class="sr-only"
+    <%= input_data_attributes %>
+  />
+  
+  <span class="<%= box_classes %>" data-ant--checkbox-target="box">
+    <span class="<%= checkmark_classes %>" data-ant--checkbox-target="checkmark">
+      <%= checkmark_svg %>
+    </span>
+    <span class="<%= checkmark_classes %>" data-ant--checkbox-target="indeterminate" style="display: none;">
+      <%= indeterminate_svg %>
+    </span>
+  </span>
+  
+  <% if content.present? %>
+    <span class="<%= label_classes %> ml-2">
+      <%= content %>
+    </span>
+  <% end %>
+</label>

@@ -1,0 +1,202 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Table 交互示例",
+  description: "展示如何使用 Table 组件的排序、筛选和行选择功能与后台交互。",
+  when_to_use: ["需要对表格数据进行排序", "需要筛选特定条件的数据", "需要批量操作选中的行"]
+) %>
+
+<div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+  <h4 class="font-semibold text-blue-900 mb-2">💡 使用说明</h4>
+  <ul class="text-sm text-blue-800 space-y-1">
+    <li>• 点击 <strong>ID</strong> 或 <strong>Name</strong> 列标题进行排序（升序 → 降序 → 无排序）</li>
+    <li>• 鼠标悬停在 <strong>Role</strong> 或 <strong>Status</strong> 列，点击筛选图标进行筛选</li>
+    <li>• 勾选复选框选择行，选中后会在下方显示批量操作工具栏</li>
+    <li>• 打开浏览器控制台查看事件和参数详情</li>
+  </ul>
+</div>
+
+<div class="mb-4 p-3 bg-gray-100 rounded text-sm font-mono">
+  <div><strong>当前排序:</strong> <%= @sort_column.presence || "无" %> <%= @sort_direction == 'ascend' ? '↑' : @sort_direction == 'descend' ? '↓' : '' %></div>
+  <div><strong>筛选条件:</strong> 
+    <%= "Role: #{@filter_role}" if @filter_role.present? %>
+    <%= "Status: #{@filter_status}" if @filter_status.present? %>
+    <%= "无" unless @filter_role.present? || @filter_status.present? %>
+  </div>
+  <div><strong>结果数量:</strong> <%= @users.size %> 条</div>
+</div>
+
+<div data-controller="table-interactive-demo">
+  <!-- 批量操作工具栏 -->
+  <div data-table-interactive-demo-target="toolbar" 
+       class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg hidden">
+    <div class="flex items-center gap-4">
+      <span class="font-semibold text-yellow-900" data-table-interactive-demo-target="selectionInfo">
+        已选择 0 项
+      </span>
+      <%= ant_button "批量删除", 
+                     size: :small,
+                     color: :danger,
+                     data: { action: "click->table-interactive-demo#deleteSelected" } %>
+      <%= ant_button "批量导出", 
+                     size: :small,
+                     data: { action: "click->table-interactive-demo#exportSelected" } %>
+      <%= ant_button "取消选择", 
+                     size: :small,
+                     data: { action: "click->table-interactive-demo#clearSelection" } %>
+    </div>
+  </div>
+
+  <%= turbo_frame_tag "demo_table" do %>
+    <%= ant_table(@users, 
+                  row_selection: { get_row_key: ->(user) { user.id } }) do |t| %>
+       <% t.column "ID", class: "w-16 font-mono", sortable: true do |u| %>
+         <%= u.id %>
+       <% end %>
+       <% t.column "Name", class: "font-medium", sortable: true do |u| %>
+         <%= u.name %>
+       <% end %>
+       <% t.column "Role", filterable: true, filters: [
+            { text: "Developer", value: "Developer" },
+            { text: "Designer", value: "Designer" },
+            { text: "Manager", value: "Manager" }
+          ] do |u| %>
+         <%= ant_tag u.role %>
+       <% end %>
+       <% t.column "Status", filterable: true, filters: [
+            { text: "Success", value: "success" },
+            { text: "Processing", value: "processing" },
+            { text: "Error", value: "error" }
+          ] do |u| %>
+         <%= ant_tag "Active", color: u.status %>
+       <% end %>
+       <% t.column "Email" do |u| %>
+         <%= u.email %>
+       <% end %>
+       <% t.column "Action", class: "text-blue-600" do |u| %>
+         <a href="#" class="hover:underline">编辑</a> | 
+         <a href="#" class="hover:underline text-red-600">删除</a>
+       <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="mt-8 p-4 bg-gray-50 rounded-lg">
+  <h4 class="font-semibold text-gray-800 mb-3">实现代码</h4>
+  
+  <div class="mb-4">
+    <h5 class="text-sm font-semibold text-gray-700 mb-2">Stimulus Controller (JavaScript)</h5>
+    <pre class="bg-white p-3 rounded border text-xs overflow-x-auto"><code>// app/javascript/controllers/table_interactive_demo_controller.js
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = ["toolbar", "selectionInfo"]
+  
+  connect() {
+    this.selectedIds = []
+    this.setupEventListeners()
+  }
+
+  setupEventListeners() {
+    this.element.addEventListener("ant--table:sort", this.handleSort.bind(this))
+    this.element.addEventListener("ant--table:filter", this.handleFilter.bind(this))
+    this.element.addEventListener("ant--table:filterClear", this.handleFilterClear.bind(this))
+    this.element.addEventListener("ant--table:selectionChange", this.handleSelection.bind(this))
+  }
+
+  handleSort(event) {
+    const { column, direction } = event.detail
+    console.log("📊 排序:", { column, direction })
+    
+    const url = new URL(window.location)
+    url.searchParams.set('sort_column', column)
+    url.searchParams.set('sort_direction', direction)
+    
+    // 使用 Turbo Frame 局部刷新
+    Turbo.visit(url.toString(), { frame: "demo_table" })
+  }
+
+  handleFilter(event) {
+    const { column, value } = event.detail
+    console.log("🔍 筛选:", { column, value })
+    
+    const url = new URL(window.location)
+    url.searchParams.set(\`filter_\${column}\`, value)
+    Turbo.visit(url.toString(), { frame: "demo_table" })
+  }
+
+  handleFilterClear(event) {
+    const { column } = event.detail
+    console.log("🗑️ 清除筛选:", { column })
+    
+    const url = new URL(window.location)
+    url.searchParams.delete(\`filter_\${column}\`)
+    Turbo.visit(url.toString(), { frame: "demo_table" })
+  }
+
+  handleSelection(event) {
+    this.selectedIds = event.detail.selectedRows
+    console.log("✅ 选中行:", this.selectedIds)
+    
+    if (this.selectedIds.length > 0) {
+      this.showToolbar()
+    } else {
+      this.hideToolbar()
+    }
+  }
+
+  showToolbar() {
+    this.toolbarTarget.classList.remove('hidden')
+    this.selectionInfoTarget.textContent = \`已选择 \${this.selectedIds.length} 项\`
+  }
+
+  hideToolbar() {
+    this.toolbarTarget.classList.add('hidden')
+  }
+
+  deleteSelected() {
+    alert(\`将删除选中的 \${this.selectedIds.length} 项: \${this.selectedIds.join(', ')}\`)
+    // 实际项目中发送 DELETE 请求
+    // fetch('/users/batch_delete', { method: 'DELETE', ... })
+  }
+
+  exportSelected() {
+    console.log("📥 导出选中项:", this.selectedIds)
+    alert(\`将导出选中的 \${this.selectedIds.length} 项\`)
+  }
+
+  clearSelection() {
+    // 取消所有复选框
+    const checkboxes = this.element.querySelectorAll('input[type="checkbox"]')
+    checkboxes.forEach(cb => {
+      cb.checked = false
+      cb.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+  }
+}</code></pre>
+  </div>
+
+  <div>
+    <h5 class="text-sm font-semibold text-gray-700 mb-2">Controller (Ruby)</h5>
+    <pre class="bg-white p-3 rounded border text-xs overflow-x-auto"><code># app/controllers/components_controller.rb
+def table_demo
+  @sort_column = params[:sort_column]
+  @sort_direction = params[:sort_direction]
+  @filter_role = params[:filter_Role]
+  @filter_status = params[:filter_Status]
+  
+  # 获取数据
+  @users = get_users_data
+  
+  # 应用筛选
+  @users = @users.select { |u| u.role == @filter_role } if @filter_role.present?
+  @users = @users.select { |u| u.status.to_s == @filter_status } if @filter_status.present?
+  
+  # 应用排序
+  if @sort_column.present? && @sort_direction != 'none'
+    @users = @users.sort_by { |u| u.send(@sort_column.downcase.to_sym) }
+    @users.reverse! if @sort_direction == 'descend'
+  end
+  
+  render "table_demo"
+end</code></pre>
+  </div>
+</div>

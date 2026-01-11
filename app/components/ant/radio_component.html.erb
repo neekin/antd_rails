@@ -1,0 +1,22 @@
+<label class="<%= radio_classes %>" data-controller="ant--radio">
+  <input
+    type="radio"
+    name="<%= @name %>"
+    value="<%= @value %>"
+    <%= "checked" if @checked %>
+    <%= "disabled" if @disabled %>
+    class="sr-only"
+    data-ant--radio-target="input"
+    data-action="change->ant--radio#handleChange"
+  />
+  
+  <span class="<%= circle_classes %>" data-ant--radio-target="circle">
+    <span class="<%= dot_classes %>" data-ant--radio-target="dot"></span>
+  </span>
+  
+  <% if content.present? %>
+    <span class="<%= label_classes %> ml-2">
+      <%= content %>
+    </span>
+  <% end %>
+</label>
