@@ -15,68 +15,72 @@
 
 When writing views, ALWAYS use the following helpers. Do NOT write raw `<div>` with Tailwind classes for these standard elements.
 
+*(See component-specific docs in `/components`)*
+
 ### Button
 ```erb
 <%= ant_button "Save", type: :primary %>
-<%= ant_button "Cancel", type: :default %>
-<%= ant_button "Danger", type: :primary, class: "!bg-red-500" %>
 ```
 
 ### Input & Form
 ```erb
-<%= ant_input name: "user[email]", placeholder: "Email" %>
-<%= ant_select name: "user[role]", options: ["Admin", "User"], selected: "User" %>
+<%= ant_input name: "user[email]" %>
+<%= ant_select name: "user[role]", options: ["Admin", "User"] %>
 ```
 
-### Tag
+### Table
 ```erb
-<%= ant_tag "Active", color: :success %>
-<%= ant_tag "Pending", color: :processing %>
-```
-
-### Card
-```erb
-<%= ant_card title: "Card Title", extra: "Action" do %>
-  Card Content...
-<% end %>
-```
-
-### Modal
-```erb
-<!-- Trigger -->
-<button onclick="document.getElementById('my-modal').ant_modal_controller.open()">Open</button>
-
-<!-- Component -->
-<%= ant_modal(title: "Title", id: "my-modal", open: false) do %>
-  <p>Content...</p>
-<% end %>
-```
-
-### Table (Advanced)
-```erb
-<!-- Simple -->
 <%= ant_table(@users) %>
-
-<!-- Advanced with Sticky Columns & Pagination -->
-<%= ant_table(@users, sticky_header: true, paginate: @pagination) do |t| %>
-  <% t.column "ID", sticky: :left, class: "w-20" do |u| %>
-    <%= u.id %>
-  <% end %>
-  <% t.column "Name" do |u| %>
-    <%= u.name %>
-  <% end %>
-<% end %>
 ```
 
-### Tabs
-```erb
-<%= ant_tabs(default: "tab1") do |t| %>
-  <% t.with_item(label: "Profile", id: "tab1") { ... } %>
-  <% t.with_item(label: "Settings", id: "tab2") { ... } %>
-<% end %>
-```
+## 4. Architecture Rules & Workflow (DEFINITION OF DONE)
 
-## 4. Architecture Rules
-- **Controllers**: Keep them thin. Use Service Objects for complex logic.
-- **Views**: Use ViewComponents (`app/components`) for any reusable UI logic.
-- **Documentation**: If you add a new component, you MUST update `app/views/components/` (Kitchen Sink) and `app/helpers/documentation_helper.rb`.
+**CRITICAL**: When creating a NEW component (e.g., `Ant::NewComponent`), you MUST complete ALL following steps in order.
+
+### Step 1: Implementation
+1.  **Create Component**: `app/components/ant/new_component.rb` & `.html.erb`.
+2.  **Register Helper**: Add helper method (e.g., `ant_new`) to `app/helpers/ant_helper.rb`.
+
+### Step 2: Documentation (The "Kitchen Sink")
+You must create a documentation page in `app/views/components/` that matches the **Ant Design Documentation Standard**.
+
+1.  **Prepare Example Code**:
+    - Open `app/helpers/documentation_helper.rb`.
+    - Add a method returning the example code using Ruby Heredoc (`<<~RUBY`).
+    - *Reason*: This prevents ERB syntax errors in the view.
+
+2.  **Create Documentation View**: `app/views/components/new.html.erb`.
+    - **Structure MUST be**:
+        1.  `Ui::ComponentHeaderComponent`: Title, Description, When To Use.
+        2.  `Ui::ExampleComponent`: Render the component + Show code (from helper).
+        3.  `Ui::ApiTableComponent`: Document ALL arguments (props), types, and defaults.
+
+    **Template**:
+    ```erb
+    <%= render Ui::ComponentHeaderComponent.new(
+      title: "New Component",
+      description: "Description...",
+      when_to_use: ["Scenario A", "Scenario B"]
+    ) %>
+
+    <%= render Ui::ExampleComponent.new(
+      title: "Basic Usage",
+      language: :erb,
+      code: new_basic_code # Defined in DocumentationHelper
+    ) do %>
+      <%= ant_new(...) %>
+    <% end %>
+
+    <h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+    <%= render Ui::ApiTableComponent.new do |api| %>
+      <% api.row "prop_name", "Description", "String", "default" %>
+    <% end %>
+    ```
+
+3.  **Register Navigation**:
+    - Add link to Sidebar: `app/views/layouts/components.html.erb`.
+    - Whitelist in Controller: `app/controllers/components_controller.rb` (`valid_components` array).
+
+4.  **Update Context**: Add a brief usage example to `llm_context.md` (Section 3).
+
+**Do not consider a component "done" until it is documented and visible in the `/components` dashboard.**

@@ -1,0 +1,21 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Calendar 日历",
+  description: "按照日历形式展示数据的容器。",
+  when_to_use: ["当数据是日期或按照日期展示时，例如日程表、任务表等。"]
+) %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本用法",
+  description: "一个简单的日历展示。",
+  language: :erb,
+  code: calendar_basic_code
+) do %>
+  <%= ant_calendar(date: Date.today) %>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12 border-b pb-2 text-pink-600">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "date", "当前展示的日期", "Date", "Date.today" %>
+  <% api.row "fullscreen", "是否全屏显示", "Boolean", "true" %>
+  <% api.row "class", "自定义样式类", "String", "nil" %>
+<% end %>

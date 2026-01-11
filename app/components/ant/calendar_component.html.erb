@@ -1,0 +1,38 @@
+<div class="ant-calendar border border-gray-200 rounded-lg p-4 bg-white <%= @html_options[:class] %>">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-4">
+    <span class="font-bold text-lg"><%= @date.strftime("%B %Y") %></span>
+    <div class="flex gap-2">
+      <!-- Mock Controls -->
+      <%= select_tag "year", options_for_select([2025, 2026], @date.year), class: "border rounded px-2 py-1 text-sm" %>
+      <%= select_tag "month", options_for_select(1..12, @date.month), class: "border rounded px-2 py-1 text-sm" %>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="grid grid-cols-7 gap-1 text-center">
+    <!-- Weekdays -->
+    <% %w[Su Mo Tu We Th Fr Sa].each do |day| %>
+      <div class="font-semibold text-gray-500 text-sm py-2"><%= day %></div>
+    <% end %>
+
+    <!-- Days (Mock logic for visual) -->
+    <% 
+       start_of_month = @date.beginning_of_month
+       start_day = start_of_month.wday
+       days_in_month = @date.end_of_month.day
+    %>
+    
+    <% start_day.times do %>
+      <div class="py-4"></div>
+    <% end %>
+
+    <% (1..days_in_month).each do |day| %>
+      <% is_today = day == @date.day %>
+      <div class="py-4 text-sm rounded cursor-pointer hover:bg-blue-50 transition-colors
+                  <%= is_today ? 'bg-[#1677ff] text-white hover:!bg-[#4096ff]' : 'text-gray-700' %>">
+        <%= day %>
+      </div>
+    <% end %>
+  </div>
+</div>

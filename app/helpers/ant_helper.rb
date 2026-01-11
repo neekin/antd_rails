@@ -14,7 +14,7 @@ module AntHelper
   def ant_input(name: nil, value: nil, type: :text, placeholder: nil, **options)
     render Ant::InputComponent.new(name: name, value: value, type: type, placeholder: placeholder, **options)
   end
-  
+
   def ant_select(name: nil, options: [], selected: nil, disabled: false, **html_options)
     render Ant::SelectComponent.new(name: name, options: options, selected: selected, disabled: disabled, **html_options)
   end
@@ -35,5 +35,9 @@ module AntHelper
 
   def ant_modal(title: nil, id: nil, open: false, **options, &block)
     render Ant::ModalComponent.new(title: title, id: id, open: open, **options), &block
+  end
+
+  def ant_calendar(date: Date.today, fullscreen: true, **options)
+    render Ant::CalendarComponent.new(date: date, fullscreen: fullscreen, **options)
   end
 end

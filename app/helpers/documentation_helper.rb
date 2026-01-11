@@ -141,11 +141,18 @@ module DocumentationHelper
       </button>
 
       <!-- Modal Component -->
-      <%= ant_modal(title: "Basic Modal", id: "my-modal", open: false) do |modal| %>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      <% end %>
-    RUBY
-  end
-end
+            <%= ant_modal(title: "Basic Modal", id: "my-modal", open: false) do |modal| %>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+            <% end %>
+          RUBY
+        end
+      
+        def calendar_basic_code
+          <<~RUBY
+            <%= ant_calendar(date: Date.today) %>
+          RUBY
+        end
+      end
+      
