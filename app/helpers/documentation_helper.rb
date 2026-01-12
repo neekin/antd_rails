@@ -250,11 +250,54 @@ module DocumentationHelper
           RUBY
         end
 
-        def calendar_basic_code
-          <<~RUBY
-            <%= ant_calendar(date: Date.today) %>
-          RUBY
-        end
+  def calendar_basic_code
+    <<~RUBY
+      <%= ant_calendar(value: Date.today) %>
+    RUBY
+  end
+
+  def calendar_selectable_code
+    <<~RUBY
+      <%= ant_calendar(value: Date.today, selectable: true) %>
+    RUBY
+  end
+
+  def calendar_events_code
+    <<~RUBY
+      <% events = [
+        { date: Date.today, title: 'Team Meeting', color: 'blue' },
+        { date: Date.today + 1, title: 'Project Deadline', color: 'red' },
+        { date: Date.today + 2, title: 'Birthday Party', color: 'purple' }
+      ] %>
+      <%= ant_calendar(value: Date.today, events: events, selectable: true) %>
+    RUBY
+  end
+
+  def calendar_year_mode_code
+    <<~RUBY
+      <%= ant_calendar(value: Date.today, mode: 'year') %>
+    RUBY
+  end
+
+  def calendar_disabled_code
+    <<~RUBY
+      <%# 禁用周末 %>
+      <% disable_weekends = ->(date) { [0, 6].include?(date.wday) } %>
+      <%= ant_calendar(value: Date.today, selectable: true, disabled_date: disable_weekends) %>
+    RUBY
+  end
+
+  def calendar_card_mode_code
+    <<~RUBY
+      <%= ant_calendar(value: Date.today, fullscreen: false, selectable: true) %>
+    RUBY
+  end
+
+  def calendar_locale_code
+    <<~RUBY
+      <%= ant_calendar(value: Date.today, locale: 'zh', selectable: true) %>
+    RUBY
+  end
 
   def switch_basic_code
     '<%= ant_switch name: "notifications", checked: true %>'
@@ -811,6 +854,92 @@ module DocumentationHelper
       <%= ant_badge status: :default, text: "Default" %>
       <%= ant_badge status: :processing, text: "Processing" %>
       <%= ant_badge status: :warning, text: "Warning" %>
+    RUBY
+  end
+
+  # Notification examples
+  def notification_basic_code
+    <<~RUBY
+      <button onclick="showNotification()">
+        Open Notification
+      </button>
+
+      <script>
+      function showNotification() {
+        const html = `<%= ant_notification(
+          message: 'Notification Title',
+          description: 'This is the content of the notification.'
+        ) %>`;
+        document.body.insertAdjacentHTML('beforeend', html);
+      }
+      </script>
+    RUBY
+  end
+
+  def notification_types_code
+    <<~RUBY
+      <%= ant_notification(message: 'Success', description: 'This is a success message.', type: 'success') %>
+      <%= ant_notification(message: 'Info', description: 'This is an info message.', type: 'info') %>
+      <%= ant_notification(message: 'Warning', description: 'This is a warning message.', type: 'warning') %>
+      <%= ant_notification(message: 'Error', description: 'This is an error message.', type: 'error') %>
+    RUBY
+  end
+
+  def notification_placement_code
+    <<~RUBY
+      <%= ant_notification(message: 'Notification', description: 'Top Left', placement: 'topLeft') %>
+      <%= ant_notification(message: 'Notification', description: 'Top Right', placement: 'topRight') %>
+      <%= ant_notification(message: 'Notification', description: 'Bottom Left', placement: 'bottomLeft') %>
+      <%= ant_notification(message: 'Notification', description: 'Bottom Right', placement: 'bottomRight') %>
+    RUBY
+  end
+
+  def notification_duration_code
+    <<~RUBY
+      <%# 1.5 秒后自动关闭 %>
+      <%= ant_notification(message: 'Quick Close', description: '1.5 seconds', duration: 1500) %>
+
+      <%# 不自动关闭 %>
+      <%= ant_notification(message: 'Never Close', description: 'Will not close automatically', duration: 0) %>
+    RUBY
+  end
+
+  # Message examples
+  def message_basic_code
+    <<~RUBY
+      <button onclick="showMessage()">
+        Show Message
+      </button>
+
+      <script>
+      function showMessage() {
+        const html = `<%= ant_message(message: 'This is a normal message') %>`;
+        document.body.insertAdjacentHTML('beforeend', html);
+      }
+      </script>
+    RUBY
+  end
+
+  def message_types_code
+    <<~RUBY
+      <%= ant_message(message: 'Success message', type: 'success') %>
+      <%= ant_message(message: 'Error message', type: 'error') %>
+      <%= ant_message(message: 'Warning message', type: 'warning') %>
+      <%= ant_message(message: 'Info message', type: 'info') %>
+      <%= ant_message(message: 'Loading...', type: 'loading') %>
+    RUBY
+  end
+
+  def message_duration_code
+    <<~RUBY
+      <%# 1秒后关闭 %>
+      <%= ant_message(message: 'Quick message', duration: 1000) %>
+
+      <%# 5秒后关闭 %>
+      <%= ant_message(message: 'Long message', duration: 5000) %>
+
+      <%# 不自动关闭 %>
+      <%= ant_message(message: 'Persistent message', duration: 0) %>
     RUBY
   end
 end

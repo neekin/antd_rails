@@ -1,0 +1,190 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Notification 通知提醒框",
+  description: "在系统四个角显示通知提醒信息。",
+  when_to_use: [
+    "较为复杂的通知内容",
+    "带有交互的通知，给出用户下一步的行动点",
+    "系统主动推送"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本使用", 
+  description: "最简单的用法，4.5 秒后自动关闭。",
+  language: :erb,
+  code: notification_basic_code
+) do %>
+  <button 
+    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+    onclick="showNotification('info', 'Notification Title', 'This is the content of the notification.')">
+    打开通知提醒框
+  </button>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "通知类型", 
+  description: "通知提醒框有四种类型：success、info、warning、error。",
+  language: :erb,
+  code: notification_types_code
+) do %>
+  <div class="flex gap-4 flex-wrap">
+    <button 
+      class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+      onclick="showNotification('success', 'Success', 'This is a success notification.')">
+      Success
+    </button>
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showNotification('info', 'Info', 'This is an info notification.')">
+      Info
+    </button>
+    <button 
+      class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+      onclick="showNotification('warning', 'Warning', 'This is a warning notification.')">
+      Warning
+    </button>
+    <button 
+      class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+      onclick="showNotification('error', 'Error', 'This is an error notification.')">
+      Error
+    </button>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "弹出位置", 
+  description: "可以设置通知从右上角、右下角、左下角、左上角弹出。",
+  language: :erb,
+  code: notification_placement_code
+) do %>
+  <div class="grid grid-cols-2 gap-4">
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showNotificationWithPlacement('topLeft', 'Notification', 'This notification is displayed at the top left.')">
+      Top Left
+    </button>
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showNotificationWithPlacement('topRight', 'Notification', 'This notification is displayed at the top right.')">
+      Top Right
+    </button>
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showNotificationWithPlacement('bottomLeft', 'Notification', 'This notification is displayed at the bottom left.')">
+      Bottom Left
+    </button>
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showNotificationWithPlacement('bottomRight', 'Notification', 'This notification is displayed at the bottom right.')">
+      Bottom Right
+    </button>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "自定义时长", 
+  description: "自定义通知框自动关闭的延时，默认 4.5s，取消自动关闭只要将该值设为 0 即可。",
+  language: :erb,
+  code: notification_duration_code
+) do %>
+  <div class="flex gap-4">
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showNotificationWithDuration(1500, 'Notification', '1.5 seconds to close automatically.')">
+      1.5s
+    </button>
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showNotificationWithDuration(0, 'Notification', 'Will not close automatically.')">
+      不自动关闭
+    </button>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "message", "通知提醒标题（必需）", "String", "nil" %>
+  <% api.row "description", "通知提醒内容", "String", "nil" %>
+  <% api.row "type", "通知类型", "'success' | 'info' | 'warning' | 'error'", "'info'" %>
+  <% api.row "duration", "自动关闭的延时（毫秒），设为 0 时不自动关闭", "Number", "4500" %>
+  <% api.row "placement", "弹出位置", "'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'", "'topRight'" %>
+  <% api.row "show_icon", "是否显示图标", "Boolean", "true" %>
+  <% api.row "closable", "是否显示关闭按钮", "Boolean", "true" %>
+<% end %>
+
+<script>
+function showNotification(type, message, description) {
+  const icons = {
+    success: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>',
+    info: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>',
+    warning: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>',
+    error: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>'
+  }
+  const colors = { success: 'text-green-500', info: 'text-blue-500', warning: 'text-yellow-500', error: 'text-red-500' }
+  
+  const html = `
+    <div data-controller="ant--notification" data-ant--notification-duration-value="4500" data-ant--notification-placement-value="topRight" 
+         class="ant-notification-notice mb-4 last:mb-0 p-4 bg-white rounded-lg shadow-xl border border-gray-200 min-w-[384px] max-w-md pointer-events-auto">
+      <div class="flex items-start gap-3">
+        <span class="ant-notification-icon ${colors[type]} flex-shrink-0 mt-0.5">${icons[type]}</span>
+        <div class="flex-1 min-w-0">
+          <div class="ant-notification-message font-semibold text-gray-900 mb-1">${message}</div>
+          <div class="ant-notification-description text-sm text-gray-600">${description}</div>
+        </div>
+        <button data-action="click->ant--notification#close" class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        </button>
+      </div>
+    </div>
+  `
+  document.body.insertAdjacentHTML('beforeend', html)
+}
+
+function showNotificationWithPlacement(placement, message, description) {
+  const icons = {
+    info: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>'
+  }
+  
+  const html = `
+    <div data-controller="ant--notification" data-ant--notification-duration-value="4500" data-ant--notification-placement-value="${placement}" 
+         class="ant-notification-notice mb-4 last:mb-0 p-4 bg-white rounded-lg shadow-xl border border-gray-200 min-w-[384px] max-w-md pointer-events-auto">
+      <div class="flex items-start gap-3">
+        <span class="ant-notification-icon text-blue-500 flex-shrink-0 mt-0.5">${icons.info}</span>
+        <div class="flex-1 min-w-0">
+          <div class="ant-notification-message font-semibold text-gray-900 mb-1">${message}</div>
+          <div class="ant-notification-description text-sm text-gray-600">${description}</div>
+        </div>
+        <button data-action="click->ant--notification#close" class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        </button>
+      </div>
+    </div>
+  `
+  document.body.insertAdjacentHTML('beforeend', html)
+}
+
+function showNotificationWithDuration(duration, message, description) {
+  const icons = {
+    info: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>'
+  }
+  
+  const html = `
+    <div data-controller="ant--notification" data-ant--notification-duration-value="${duration}" data-ant--notification-placement-value="topRight" 
+         class="ant-notification-notice mb-4 last:mb-0 p-4 bg-white rounded-lg shadow-xl border border-gray-200 min-w-[384px] max-w-md pointer-events-auto">
+      <div class="flex items-start gap-3">
+        <span class="ant-notification-icon text-blue-500 flex-shrink-0 mt-0.5">${icons.info}</span>
+        <div class="flex-1 min-w-0">
+          <div class="ant-notification-message font-semibold text-gray-900 mb-1">${message}</div>
+          <div class="ant-notification-description text-sm text-gray-600">${description}</div>
+        </div>
+        <button data-action="click->ant--notification#close" class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        </button>
+      </div>
+    </div>
+  `
+  document.body.insertAdjacentHTML('beforeend', html)
+}
+</script>

@@ -1,0 +1,125 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Message 全局提示",
+  description: "全局展示操作反馈信息。可提供成功、警告和错误等反馈信息。",
+  when_to_use: [
+    "顶部居中显示并自动消失，是一种不打断用户操作的轻量级提示方式"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本使用", 
+  description: "信息提醒，默认 3 秒后关闭。",
+  language: :erb,
+  code: message_basic_code
+) do %>
+  <button 
+    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+    onclick="showMessage('info', 'This is a normal message')">
+    显示普通提示
+  </button>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "提示类型", 
+  description: "包括成功、失败、警告、信息、加载中。",
+  language: :erb,
+  code: message_types_code
+) do %>
+  <div class="flex gap-4 flex-wrap">
+    <button 
+      class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+      onclick="showMessage('success', 'This is a success message')">
+      Success
+    </button>
+    <button 
+      class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+      onclick="showMessage('error', 'This is an error message')">
+      Error
+    </button>
+    <button 
+      class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+      onclick="showMessage('warning', 'This is a warning message')">
+      Warning
+    </button>
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showMessage('info', 'This is an info message')">
+      Info
+    </button>
+    <button 
+      class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+      onclick="showMessage('loading', 'Loading...')">
+      Loading
+    </button>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "自定义时长", 
+  description: "自定义消息显示时长，默认 3s。",
+  language: :erb,
+  code: message_duration_code
+) do %>
+  <div class="flex gap-4">
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showMessageWithDuration(1000, 'This message will close in 1 second')">
+      1s
+    </button>
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showMessageWithDuration(5000, 'This message will close in 5 seconds')">
+      5s
+    </button>
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onclick="showMessageWithDuration(0, 'This message will not close automatically')">
+      不自动关闭
+    </button>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "message", "提示内容（必需）", "String", "nil" %>
+  <% api.row "type", "提示类型", "'success' | 'info' | 'warning' | 'error' | 'loading'", "'info'" %>
+  <% api.row "duration", "自动关闭的延时（毫秒），设为 0 时不自动关闭", "Number", "3000" %>
+  <% api.row "show_icon", "是否显示图标", "Boolean", "true" %>
+<% end %>
+
+<script>
+function showMessage(type, content) {
+  const icons = {
+    success: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>',
+    info: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>',
+    warning: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>',
+    error: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>',
+    loading: '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
+  }
+  const colors = { success: 'text-green-500', info: 'text-blue-500', warning: 'text-yellow-500', error: 'text-red-500', loading: 'text-blue-500' }
+  
+  const html = `
+    <div data-controller="ant--message" data-ant--message-duration-value="3000" 
+         class="ant-message-notice inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-lg border border-gray-200">
+      <span class="${colors[type]}">${icons[type]}</span>
+      <span class="text-gray-900">${content}</span>
+    </div>
+  `
+  document.body.insertAdjacentHTML('beforeend', html)
+}
+
+function showMessageWithDuration(duration, content) {
+  const icon = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>'
+  
+  const html = `
+    <div data-controller="ant--message" data-ant--message-duration-value="${duration}" 
+         class="ant-message-notice inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-lg border border-gray-200">
+      <span class="text-blue-500">${icon}</span>
+      <span class="text-gray-900">${content}</span>
+    </div>
+  `
+  document.body.insertAdjacentHTML('beforeend', html)
+}
+</script>

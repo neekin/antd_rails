@@ -306,6 +306,88 @@ When writing views, ALWAYS use the following helpers. Do NOT write raw `<div>` w
 - 多种预设颜色
 - 状态点模式支持动画效果
 
+### Notification
+```erb
+<!-- JavaScript 方式触发通知 -->
+<button onclick="showNotification()">Open Notification</button>
+
+<script>
+function showNotification() {
+  const html = `<%= ant_notification(
+    message: 'Notification Title',
+    description: 'This is the content of the notification.'
+  ) %>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+</script>
+
+<!-- 不同类型 -->
+<%= ant_notification(message: 'Success', description: 'Success message', type: 'success') %>
+<%= ant_notification(message: 'Error', description: 'Error message', type: 'error') %>
+<%= ant_notification(message: 'Warning', description: 'Warning message', type: 'warning') %>
+
+<!-- 不同位置 -->
+<%= ant_notification(message: 'Top Left', placement: 'topLeft') %>
+<%= ant_notification(message: 'Bottom Right', placement: 'bottomRight') %>
+
+<!-- 自定义时长 -->
+<%= ant_notification(message: 'Quick', duration: 1500) %>
+<%= ant_notification(message: 'Never Close', duration: 0) %>
+```
+
+**Notification 组件参数说明：**
+- `message`: 通知提醒标题（必选）
+- `description`: 通知提醒内容
+- `type`: 通知类型（'success', 'info', 'warning', 'error'），默认 'info'
+- `duration`: 自动关闭延时（毫秒），0 表示不自动关闭，默认 4500
+- `placement`: 弹出位置（'topLeft', 'topRight', 'bottomLeft', 'bottomRight'），默认 'topRight'
+- `show_icon`: 是否显示图标，默认 true
+- `closable`: 是否显示关闭按钮，默认 true
+
+**Notification 组件特性：**
+- 在页面四个角落显示
+- 支持多个通知同时显示
+- 自动排列，不会重叠
+- 带有流畅的进入/退出动画
+- 点击关闭按钮或自动关闭
+
+### Message
+```erb
+<!-- JavaScript 方式触发消息 -->
+<button onclick="showMessage()">Show Message</button>
+
+<script>
+function showMessage() {
+  const html = `<%= ant_message(content: 'This is a message') %>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+</script>
+
+<!-- 不同类型 -->
+<%= ant_message(content: 'Success message', type: 'success') %>
+<%= ant_message(content: 'Error message', type: 'error') %>
+<%= ant_message(content: 'Warning message', type: 'warning') %>
+<%= ant_message(content: 'Loading...', type: 'loading') %>
+
+<!-- 自定义时长 -->
+<%= ant_message(content: 'Quick message', duration: 1000) %>
+<%= ant_message(content: 'Persistent message', duration: 0) %>
+```
+
+**Message 组件参数说明：**
+- `content`: 提示内容（必选）
+- `type`: 提示类型（'success', 'info', 'warning', 'error', 'loading'），默认 'info'
+- `duration`: 自动关闭延时（毫秒），0 表示不自动关闭，默认 3000
+- `show_icon`: 是否显示图标，默认 true
+
+**Message 组件特性：**
+- 顶部居中显示
+- 轻量级提示，不打断用户操作
+- 支持多个消息同时显示
+- 自动垂直排列
+- 流畅的进入/退出动画
+- loading 类型显示旋转动画
+
 ### Card
 - `description`: 描述文案，默认 "No Data"
 - `image`: 空状态图片，`:default`、`:simple` 或自定义 URL

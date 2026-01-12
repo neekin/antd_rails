@@ -89,7 +89,7 @@
   code: form_all_components_code
 ) do %>
   <div class="max-w-3xl w-full">
-    <% user_struct = Struct.new(:name, :email, :password, :role, :birthday, :permissions, :active, :newsletter, :gender, :persisted?, keyword_init: true).new(
+    <% user_struct = Struct.new(:name, :email, :password, :role, :birthday, :permissions, :active, :newsletter, :gender, :avatar, :documents, :persisted?, keyword_init: true).new(
          name: "Jane Doe",
          email: "jane@example.com",
          password: "",
@@ -99,6 +99,8 @@
          active: true,
          newsletter: false,
          gender: "female",
+         avatar: nil,
+         documents: nil,
          persisted?: true
        )
        def user_struct.errors; @errors ||= ActiveModel::Errors.new(self); end
@@ -135,6 +137,18 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
           <%= f.date_picker :birthday %>
+        </div>
+        
+        <!-- Upload 文件上传 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Documents</label>
+          <%= f.upload :documents, multiple: true, accept: ".pdf,.doc,.docx" %>
+        </div>
+        
+        <!-- Image Upload 图片上传 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Avatar</label>
+          <%= f.image_upload :avatar, max_size: 5 %>
         </div>
         
         <!-- Transfer 穿梭框 -->

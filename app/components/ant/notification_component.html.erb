@@ -1,0 +1,27 @@
+<div class="<%= notification_classes %>" 
+     data-controller="<%= notification_data[:controller] %>" 
+     data-ant--notification-duration-value="<%= notification_data[:ant__notification_duration_value] %>"
+     data-ant--notification-placement-value="<%= notification_data[:ant__notification_placement_value] %>">
+  <div class="flex items-start gap-3">
+    <% if show_icon %>
+      <span class="ant-notification-icon <%= icon_color_class %> flex-shrink-0 mt-0.5">
+        <%= icon_svg %>
+      </span>
+    <% end %>
+    
+    <div class="flex-1 min-w-0">
+      <div class="ant-notification-message font-semibold text-gray-900 mb-1"><%= message %></div>
+      <% if description.present? %>
+        <div class="ant-notification-description text-sm text-gray-600"><%= description %></div>
+      <% end %>
+    </div>
+    
+    <% if closable %>
+      <button type="button" 
+              class="ant-notification-close flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors ml-2 -mt-1"
+              data-action="click->ant--notification#close">
+        <%= close_icon_svg %>
+      </button>
+    <% end %>
+  </div>
+</div>

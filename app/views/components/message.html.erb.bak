@@ -1,0 +1,180 @@
+<div class="space-y-12">
+  <!-- Header -->
+  <div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Message 全局提示</h1>
+    <p class="text-gray-600">全局展示操作反馈信息。可提供成功、警告和错误等反馈信息。</p>
+    <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+      <li>顶部居中显示并自动消失，是一种不打断用户操作的轻量级提示方式</li>
+    </ul>
+  </div>
+
+  <!-- Basic Usage -->
+  <section>
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">基本使用</h2>
+    <p class="text-gray-600 mb-4">信息提醒，默认 3 秒后关闭。</p>
+    
+    <div class="p-6 bg-gray-50 rounded-lg space-y-4">
+      <button 
+        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        onclick="showMessage('info', 'This is a normal message')">
+        显示普通提示
+      </button>
+    </div>
+
+    <details class="mt-4">
+      <summary class="cursor-pointer text-blue-600 hover:text-blue-700 font-medium">显示代码</summary>
+      <pre class="mt-2 p-4 bg-gray-900 text-gray-100 rounded-lg overflow-x-auto"><code><%= message_basic_code %></code></pre>
+    </details>
+  </section>
+
+  <!-- Types -->
+  <section>
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">提示类型</h2>
+    <p class="text-gray-600 mb-4">包括成功、失败、警告、信息、加载中。</p>
+    
+    <div class="p-6 bg-gray-50 rounded-lg space-y-4">
+      <div class="flex flex-wrap gap-4">
+        <button 
+          class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          onclick="showMessage('success', 'This is a success message')">
+          Success
+        </button>
+        <button 
+          class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          onclick="showMessage('error', 'This is an error message')">
+          Error
+        </button>
+        <button 
+          class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+          onclick="showMessage('warning', 'This is a warning message')">
+          Warning
+        </button>
+        <button 
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onclick="showMessage('info', 'This is an info message')">
+          Info
+        </button>
+        <button 
+          class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+          onclick="showMessage('loading', 'Loading...')">
+          Loading
+        </button>
+      </div>
+    </div>
+
+    <details class="mt-4">
+      <summary class="cursor-pointer text-blue-600 hover:text-blue-700 font-medium">显示代码</summary>
+      <pre class="mt-2 p-4 bg-gray-900 text-gray-100 rounded-lg overflow-x-auto"><code><%= message_types_code %></code></pre>
+    </details>
+  </section>
+
+  <!-- Custom Duration -->
+  <section>
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">自定义时长</h2>
+    <p class="text-gray-600 mb-4">自定义消息显示时长，默认 3 秒，设置为 0 则不会自动关闭。</p>
+    
+    <div class="p-6 bg-gray-50 rounded-lg space-y-4">
+      <div class="flex gap-4">
+        <button 
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onclick="showMessageWithDuration(1000, 'This message will close in 1 second')">
+          1秒后关闭
+        </button>
+        <button 
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onclick="showMessageWithDuration(5000, 'This message will close in 5 seconds')">
+          5秒后关闭
+        </button>
+        <button 
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onclick="showMessageWithDuration(0, 'This message will not close automatically')">
+          不自动关闭
+        </button>
+      </div>
+    </div>
+
+    <details class="mt-4">
+      <summary class="cursor-pointer text-blue-600 hover:text-blue-700 font-medium">显示代码</summary>
+      <pre class="mt-2 p-4 bg-gray-900 text-gray-100 rounded-lg overflow-x-auto"><code><%= message_duration_code %></code></pre>
+    </details>
+  </section>
+
+  <!-- API Documentation -->
+  <section>
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">API</h2>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">参数</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">说明</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">默认值</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">content</td>
+            <td class="px-6 py-4 text-sm text-gray-600">提示内容</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">String</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">-</td>
+          </tr>
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">type</td>
+            <td class="px-6 py-4 text-sm text-gray-600">提示类型</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">'success' | 'info' | 'warning' | 'error' | 'loading'</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">'info'</td>
+          </tr>
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">duration</td>
+            <td class="px-6 py-4 text-sm text-gray-600">自动关闭的延时（毫秒），设为 0 时不自动关闭</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Number</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">3000</td>
+          </tr>
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">show_icon</td>
+            <td class="px-6 py-4 text-sm text-gray-600">是否显示图标</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Boolean</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">true</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script>
+function showMessage(type, content) {
+  const icons = {
+    success: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>',
+    info: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>',
+    warning: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>',
+    error: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>',
+    loading: '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
+  }
+  const colors = { success: 'text-green-500', info: 'text-blue-500', warning: 'text-yellow-500', error: 'text-red-500', loading: 'text-blue-500' }
+  
+  const html = `
+    <div data-controller="ant--message" data-ant--message-duration-value="3000" 
+         class="ant-message-notice inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-lg border border-gray-200">
+      <span class="${colors[type]}">${icons[type]}</span>
+      <span class="text-gray-900">${content}</span>
+    </div>
+  `
+  document.body.insertAdjacentHTML('beforeend', html)
+}
+
+function showMessageWithDuration(duration, content) {
+  const icon = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>'
+  
+  const html = `
+    <div data-controller="ant--message" data-ant--message-duration-value="${duration}" 
+         class="ant-message-notice inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-lg border border-gray-200">
+      <span class="text-blue-500">${icon}</span>
+      <span class="text-gray-900">${content}</span>
+    </div>
+  `
+  document.body.insertAdjacentHTML('beforeend', html)
+}
+</script>

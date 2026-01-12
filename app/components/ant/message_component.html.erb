@@ -1,0 +1,8 @@
+<div class="<%= message_classes %>" data-controller="<%= message_data[:controller] %>" data-ant--message-duration-value="<%= message_data[:ant__message_duration_value] %>">
+  <% if show_icon %>
+    <span class="ant-message-icon <%= icon_color_class %>">
+      <%= icon_svg %>
+    </span>
+  <% end %>
+  <span class="ant-message-content-text text-gray-900"><%= content %></span>
+</div>

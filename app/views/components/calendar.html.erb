@@ -1,21 +1,96 @@
 <%= render Ui::ComponentHeaderComponent.new(
   title: "Calendar 日历",
   description: "按照日历形式展示数据的容器。",
-  when_to_use: ["当数据是日期或按照日期展示时，例如日程表、任务表等。"]
+  when_to_use: [
+    "当数据是日期或按照日期展示时，例如日程表、任务表等",
+    "当需要一个日期选择器时，可以使用日历模式"
+  ]
 ) %>
 
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
 <%= render Ui::ExampleComponent.new(
-  title: "基本用法",
+  title: "基本使用", 
   description: "一个简单的日历展示。",
   language: :erb,
   code: calendar_basic_code
 ) do %>
-  <%= ant_calendar(date: Date.today) %>
+  <%= ant_calendar(value: Date.today) %>
 <% end %>
 
-<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12 border-b pb-2 text-pink-600">API</h3>
+<%= render Ui::ExampleComponent.new(
+  title: "可选择日期", 
+  description: "设置 selectable: true 允许用户选择日期。",
+  language: :erb,
+  code: calendar_selectable_code
+) do %>
+  <%= ant_calendar(value: Date.today, selectable: true) %>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "带事件标记", 
+  description: "可以在日历上标记重要事件。",
+  language: :erb,
+  code: calendar_events_code
+) do %>
+  <% events = [
+    { date: Date.today, title: 'Team Meeting', color: 'blue' },
+    { date: Date.today + 1, title: 'Project Deadline', color: 'red' },
+    { date: Date.today + 2, title: 'Birthday Party', color: 'purple' },
+    { date: Date.today + 3, title: 'Dentist Appointment', color: 'yellow' },
+    { date: Date.today + 7, title: 'Conference', color: 'green' }
+  ] %>
+  <%= ant_calendar(value: Date.today, events: events, selectable: true) %>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "年视图", 
+  description: "通过设置 mode: 'year' 切换到年视图模式。",
+  language: :erb,
+  code: calendar_year_mode_code
+) do %>
+  <%= ant_calendar(value: Date.today, mode: 'year') %>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "禁用日期", 
+  description: "通过 disabled_date 属性禁用特定日期。",
+  language: :erb,
+  code: calendar_disabled_code
+) do %>
+  <% disable_weekends = ->(date) { [0, 6].include?(date.wday) } %>
+  <%= ant_calendar(value: Date.today, selectable: true, disabled_date: disable_weekends) %>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "卡片模式", 
+  description: "设置 fullscreen: false 使用卡片模式。",
+  language: :erb,
+  code: calendar_card_mode_code
+) do %>
+  <div class="max-w-2xl">
+    <%= ant_calendar(value: Date.today, fullscreen: false, selectable: true) %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "中文本地化", 
+  description: "设置 locale: 'zh' 使用中文星期标题。",
+  language: :erb,
+  code: calendar_locale_code
+) do %>
+  <%= ant_calendar(value: Date.today, locale: 'zh', selectable: true) %>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
 <%= render Ui::ApiTableComponent.new do |api| %>
-  <% api.row "date", "当前展示的日期", "Date", "Date.today" %>
+  <% api.row "value", "当前展示的日期", "Date", "Date.today" %>
+  <% api.row "mode", "显示模式", "'month' | 'year'", "'month'" %>
   <% api.row "fullscreen", "是否全屏显示", "Boolean", "true" %>
-  <% api.row "class", "自定义样式类", "String", "nil" %>
+  <% api.row "selectable", "是否可以选择日期", "Boolean", "false" %>
+  <% api.row "disabled_date", "禁用日期的判断函数", "Proc", "nil" %>
+  <% api.row "events", "事件数组，每个事件包含 date, title, color", "Array", "[]" %>
+  <% api.row "show_header", "是否显示头部", "Boolean", "true" %>
+  <% api.row "show_today_button", "是否显示'今天'按钮", "Boolean", "true" %>
+  <% api.row "locale", "语言设置", "'en' | 'zh'", "'en'" %>
 <% end %>

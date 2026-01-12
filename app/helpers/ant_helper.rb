@@ -58,8 +58,21 @@ module AntHelper
     render Ant::ModalComponent.new(title: title, id: id, open: open, **options), &block
   end
 
-  def ant_calendar(date: Date.today, fullscreen: true, **options)
-    render Ant::CalendarComponent.new(date: date, fullscreen: fullscreen, **options)
+  def ant_calendar(value: nil, mode: "month", fullscreen: true, selectable: false,
+                  disabled_date: nil, events: [], show_header: true,
+                  show_today_button: true, locale: "en", **options)
+    render Ant::CalendarComponent.new(
+      value: value,
+      mode: mode,
+      fullscreen: fullscreen,
+      selectable: selectable,
+      disabled_date: disabled_date,
+      events: events,
+      show_header: show_header,
+      show_today_button: show_today_button,
+      locale: locale,
+      **options
+    )
   end
 
   def ant_switch(name: nil, checked: false, disabled: false, loading: false,
@@ -183,5 +196,31 @@ module AntHelper
     options[:html][:class] = [ options[:html][:class], "space-y-4" ].compact.join(" ")
 
     form_with(**options, &block)
+  end
+
+  # Notification helper - renders notification component
+  def ant_notification(message:, description: nil, type: "info", duration: 4500,
+                       placement: "topRight", show_icon: true, closable: true, **options)
+    render Ant::NotificationComponent.new(
+      message: message,
+      description: description,
+      type: type,
+      duration: duration,
+      placement: placement,
+      show_icon: show_icon,
+      closable: closable,
+      **options
+    )
+  end
+
+  # Message helper - renders message component
+  def ant_message(message:, type: "info", duration: 3000, show_icon: true, **options)
+    render Ant::MessageComponent.new(
+      message: message,
+      type: type,
+      duration: duration,
+      show_icon: show_icon,
+      **options
+    )
   end
 end

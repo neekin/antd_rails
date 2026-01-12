@@ -1,38 +1,83 @@
-<div class="ant-calendar border border-gray-200 rounded-lg p-4 bg-white <%= @html_options[:class] %>">
-  <!-- Header -->
-  <div class="flex justify-between items-center mb-4">
-    <span class="font-bold text-lg"><%= @date.strftime("%B %Y") %></span>
-    <div class="flex gap-2">
-      <!-- Mock Controls -->
-      <%= select_tag "year", options_for_select([2025, 2026], @date.year), class: "border rounded px-2 py-1 text-sm" %>
-      <%= select_tag "month", options_for_select(1..12, @date.month), class: "border rounded px-2 py-1 text-sm" %>
-    </div>
-  </div>
+<div class="<%= calendar_classes %>" data-controller="ant--calendar" <%= calendar_data_attributes %>>
+  <% if show_header %>
+    <div class="ant-calendar-header flex justify-between items-center mb-6">
+      <!-- Left section -->
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <button 
+            type="button"
+            class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 transition-colors text-lg font-semibold"
+            data-action="ant--calendar#prevMonth">
+            ‹
+          </button>
 
-  <!-- Body -->
-  <div class="grid grid-cols-7 gap-1 text-center">
-    <!-- Weekdays -->
-    <% %w[Su Mo Tu We Th Fr Sa].each do |day| %>
-      <div class="font-semibold text-gray-500 text-sm py-2"><%= day %></div>
-    <% end %>
+          <span 
+            class="text-lg font-semibold text-gray-900 min-w-[150px] text-center"
+            data-ant--calendar-target="monthYear">
+            <%= mode == "month" ? value.strftime("%B %Y") : value.strftime("%Y") %>
+          </span>
 
-    <!-- Days (Mock logic for visual) -->
-    <% 
-       start_of_month = @date.beginning_of_month
-       start_day = start_of_month.wday
-       days_in_month = @date.end_of_month.day
-    %>
-    
-    <% start_day.times do %>
-      <div class="py-4"></div>
-    <% end %>
+          <button 
+            type="button"
+            class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 transition-colors text-lg font-semibold"
+            data-action="ant--calendar#nextMonth">
+            ›
+          </button>
+        </div>
 
-    <% (1..days_in_month).each do |day| %>
-      <% is_today = day == @date.day %>
-      <div class="py-4 text-sm rounded cursor-pointer hover:bg-blue-50 transition-colors
-                  <%= is_today ? 'bg-[#1677ff] text-white hover:!bg-[#4096ff]' : 'text-gray-700' %>">
-        <%= day %>
+        <% if show_today_button %>
+          <button 
+            type="button"
+            class="px-3 py-1 text-sm border border-blue-500 text-blue-500 rounded hover:bg-blue-50 transition-colors"
+            data-action="ant--calendar#selectToday">
+            Today
+          </button>
+        <% end %>
       </div>
-    <% end %>
-  </div>
+
+      <!-- Right section -->
+      <div class="flex items-center gap-2">
+        <div class="inline-flex rounded-md shadow-sm border border-gray-300">
+          <button 
+            type="button"
+            class="px-4 py-1.5 text-sm font-medium transition-colors rounded-l-md border-r border-gray-300 <%= mode == 'month' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50' %>"
+            data-action="ant--calendar#switchMode"
+            data-mode="month">
+            Month
+          </button>
+          <button 
+            type="button"
+            class="px-4 py-1.5 text-sm font-medium transition-colors rounded-r-md <%= mode == 'year' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50' %>"
+            data-action="ant--calendar#switchMode"
+            data-mode="year">
+            Year
+          </button>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <% if mode == "month" %>
+    <div class="ant-calendar-month-panel" data-ant--calendar-target="monthPanel">
+      <!-- Weekday headers -->
+      <div class="grid grid-cols-7 gap-1 mb-2">
+        <% weekday_names.each do |day| %>
+          <div class="text-center text-sm font-semibold text-gray-600 py-2"><%= day %></div>
+        <% end %>
+      </div>
+
+      <!-- Days grid -->
+      <div class="grid grid-cols-7 gap-1" data-ant--calendar-target="daysGrid">
+        <%= render_month_days %>
+      </div>
+    </div>
+  <% else %>
+    <div class="ant-calendar-year-panel" data-ant--calendar-target="yearPanel">
+      <div class="grid grid-cols-3 gap-4">
+        <% (1..12).each do |month_num| %>
+          <%= render_month_cell(month_num) %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>
