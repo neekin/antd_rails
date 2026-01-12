@@ -1,0 +1,162 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Badge 徽标数",
+  description: "图标右上角的圆形徽标数字。",
+  when_to_use: [
+    "一般出现在通知图标或头像的右上角，用于显示需要处理的消息数量。",
+    "通过醒目视觉形式吸引用户注意。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本使用",
+  description: "简单的徽章使用，可以包裹一个元素。",
+  language: :erb,
+  code: badge_basic_code
+) do %>
+  <div class="flex gap-8">
+    <%= ant_badge count: 5 do %>
+      <%= ant_button "通知", type: :default %>
+    <% end %>
+    
+    <%= ant_badge count: 0, show_zero: true do %>
+      <%= ant_button "通知", type: :default %>
+    <% end %>
+    
+    <%= ant_badge do %>
+      <%= ant_button "通知", type: :default %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "独立使用",
+  description: "不包裹任何元素，单独使用徽章。",
+  language: :erb,
+  code: badge_standalone_code
+) do %>
+  <div class="flex items-center gap-4">
+    <%= ant_badge count: 25 %>
+    <%= ant_badge count: 4, color: :blue %>
+    <%= ant_badge count: 109, color: :green %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "封顶数字",
+  description: "超过 max 的值会显示为 '{max}+'，默认的 max 为 99。",
+  language: :erb,
+  code: badge_max_code
+) do %>
+  <div class="flex gap-8">
+    <%= ant_badge count: 99 do %>
+      <%= ant_button "通知", type: :default %>
+    <% end %>
+    
+    <%= ant_badge count: 100 do %>
+      <%= ant_button "通知", type: :default %>
+    <% end %>
+    
+    <%= ant_badge count: 1000, max: 999 do %>
+      <%= ant_button "通知", type: :default %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "小红点",
+  description: "没有具体的数字，只有一个小红点。",
+  language: :erb,
+  code: badge_dot_code
+) do %>
+  <div class="flex gap-8">
+    <%= ant_badge dot: true do %>
+      <%= ant_button "通知", type: :default %>
+    <% end %>
+    
+    <%= ant_badge dot: true do %>
+      <a href="#" class="text-blue-600 hover:text-blue-700">链接</a>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "多种颜色",
+  description: "我们提供多种预设色彩的徽标样式，可通过设置 color 为预设色来调用。",
+  language: :erb,
+  code: badge_colors_code
+) do %>
+  <div class="flex flex-wrap gap-4">
+    <%= ant_badge count: 5, color: :blue do %>
+      <%= ant_button "Blue", type: :default %>
+    <% end %>
+    
+    <%= ant_badge count: 5, color: :green do %>
+      <%= ant_button "Green", type: :default %>
+    <% end %>
+    
+    <%= ant_badge count: 5, color: :red do %>
+      <%= ant_button "Red", type: :default %>
+    <% end %>
+    
+    <%= ant_badge count: 5, color: :yellow do %>
+      <%= ant_button "Yellow", type: :default %>
+    <% end %>
+    
+    <%= ant_badge count: 5, color: :purple do %>
+      <%= ant_button "Purple", type: :default %>
+    <% end %>
+    
+    <%= ant_badge count: 5, color: :cyan do %>
+      <%= ant_button "Cyan", type: :default %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "状态点",
+  description: "用于表示状态的小圆点。",
+  language: :erb,
+  code: badge_status_code
+) do %>
+  <div class="space-y-3">
+    <%= ant_badge status: :success, text: "Success" %>
+    <%= ant_badge status: :error, text: "Error" %>
+    <%= ant_badge status: :default, text: "Default" %>
+    <%= ant_badge status: :processing, text: "Processing" %>
+    <%= ant_badge status: :warning, text: "Warning" %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "count", "展示的数字", "Integer", "0" %>
+  <% api.row "dot", "不展示数字，只有一个小红点", "Boolean", "false" %>
+  <% api.row "show_zero", "当数值为 0 时，是否展示 Badge", "Boolean", "false" %>
+  <% api.row "max", "最大值，超过最大值会显示 '{max}+'", "Integer", "99" %>
+  <% api.row "color", "自定义徽标颜色（预设色: blue, green, red, yellow, orange, purple, cyan, magenta）", "String/Symbol", "'red'" %>
+  <% api.row "status", "设置 Badge 为状态点（success, processing, error, warning, default）", "Symbol", "nil" %>
+  <% api.row "text", "在设置了 status 时有效，设置状态点的文本", "String", "nil" %>
+  <% api.row "offset", "设置状态点的位置偏移，格式为 [x, y]", "Array", "nil" %>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">设计指引</h3>
+<div class="bg-gray-50 p-6 rounded-lg space-y-4">
+  <div>
+    <h4 class="font-semibold text-gray-800 mb-2">何时使用</h4>
+    <ul class="list-disc list-inside text-gray-700 space-y-1">
+      <li>当需要突出某个数字时。</li>
+      <li>当需要引起用户注意时。</li>
+    </ul>
+  </div>
+  
+  <div>
+    <h4 class="font-semibold text-gray-800 mb-2">使用建议</h4>
+    <ul class="list-disc list-inside text-gray-700 space-y-1">
+      <li><strong>简洁明了</strong>：数字应该简洁，避免使用过长的数字。</li>
+      <li><strong>适度使用</strong>：不要滥用徽标，只在必要时使用。</li>
+      <li><strong>及时更新</strong>：徽标数字应该实时更新，反映最新状态。</li>
+    </ul>
+  </div>
+</div>

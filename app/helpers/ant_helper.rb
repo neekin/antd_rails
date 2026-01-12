@@ -99,4 +99,89 @@ module AntHelper
       **options
     ), &block
   end
+
+  def ant_date_picker(name: nil, value: nil, placeholder: "Select date", disabled: false, **html_options)
+    render Ant::DatePickerComponent.new(name: name, value: value, placeholder: placeholder, disabled: disabled, **html_options)
+  end
+
+  def ant_transfer(name: nil, options: [], selected: [], left_title: "Source", right_title: "Target", disabled: false, **html_options)
+    render Ant::TransferComponent.new(
+      name: name,
+      options: options,
+      selected: selected,
+      left_title: left_title,
+      right_title: right_title,
+      disabled: disabled,
+      **html_options
+    )
+  end
+
+  def ant_upload(name:, mode: :file, accept: nil, multiple: false, max_size: nil,
+                 disabled: false, list_type: :text, max_count: nil, **html_options, &block)
+    render Ant::UploadComponent.new(
+      name: name,
+      mode: mode,
+      accept: accept,
+      multiple: multiple,
+      max_size: max_size,
+      disabled: disabled,
+      list_type: list_type,
+      max_count: max_count,
+      **html_options
+    ), &block
+  end
+
+  def ant_image(src:, alt: "", width: nil, height: nil, preview: false,
+                fallback: nil, placeholder: nil, **html_options)
+    render Ant::ImageComponent.new(
+      src: src,
+      alt: alt,
+      width: width,
+      height: height,
+      preview: preview,
+      fallback: fallback,
+      placeholder: placeholder,
+      **html_options
+    )
+  end
+
+  def ant_empty(description: "No Data", image: :default, **html_options, &block)
+    render Ant::EmptyComponent.new(
+      description: description,
+      image: image,
+      **html_options
+    ), &block
+  end
+
+  def ant_badge(count: 0, dot: false, show_zero: false, max: 99,
+                color: nil, status: nil, text: nil, offset: nil, **html_options, &block)
+    render Ant::BadgeComponent.new(
+      count: count,
+      dot: dot,
+      show_zero: show_zero,
+      max: max,
+      color: color,
+      status: status,
+      text: text,
+      offset: offset,
+      **html_options
+    ), &block
+  end
+
+  # Form builder for Ant Design components
+  def ant_form_for(record, options = {}, &block)
+    options[:builder] = AntFormBuilder
+    options[:html] ||= {}
+    options[:html][:class] = [ options[:html][:class], "space-y-4" ].compact.join(" ")
+
+    form_for(record, options, &block)
+  end
+
+  def ant_form_with(**options, &block)
+    options[:builder] = AntFormBuilder
+    options[:html] ||= {}
+    options[:html][:class] = [ options[:html][:class], "space-y-4" ].compact.join(" ")
+
+    form_with(**options, &block)
+  end
 end

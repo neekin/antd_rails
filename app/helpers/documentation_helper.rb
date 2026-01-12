@@ -260,6 +260,13 @@ module DocumentationHelper
     '<%= ant_switch name: "notifications", checked: true %>'
   end
 
+  def switch_with_label_code
+    <<~RUBY
+      <%= ant_switch name: "notifications", checked: true, label: "Enable notifications" %>
+      <%= ant_switch name: "dark_mode", checked: false, label: "Dark mode" %>
+    RUBY
+  end
+
   def switch_disabled_code
     <<~RUBY
       <%= ant_switch name: "disabled_off", checked: false, disabled: true %>
@@ -427,6 +434,383 @@ module DocumentationHelper
       <%= ant_checkbox name: "default_checkbox", checked: true, size: :default do %>
         Default
       <% end %>
+    RUBY
+  end
+
+  # DatePicker 代码示例
+  def date_picker_basic_code
+    '<%= ant_date_picker name: "user[birthday]", placeholder: "Select date" %>'
+  end
+
+  def date_picker_value_code
+    <<~RUBY
+      <%= ant_date_picker name: "appointment_date",#{' '}
+                          value: Date.today,
+                          placeholder: "Select date" %>
+    RUBY
+  end
+
+  def date_picker_disabled_code
+    <<~RUBY
+      <%= ant_date_picker name: "locked_date",#{' '}
+                          value: "2024-01-15",
+                          disabled: true,
+                          placeholder: "Disabled" %>
+    RUBY
+  end
+
+  def date_picker_custom_code
+    <<~RUBY
+      <%= ant_date_picker name: "custom_date",#{' '}
+                          placeholder: "Custom styled",
+                          class: "w-full border-2 border-blue-500" %>
+    RUBY
+  end
+
+  # Transfer 代码示例
+  def transfer_basic_code
+    <<~RUBY
+      <%= ant_transfer name: "permissions",#{' '}
+                       options: [["查看用户", "view_users"], ["编辑用户", "edit_users"], ["删除用户", "delete_users"], ["管理角色", "manage_roles"], ["系统设置", "system_settings"]],
+                       selected: ["view_users", "manage_roles"] %>
+    RUBY
+  end
+
+  def transfer_titles_code
+    <<~RUBY
+      <%= ant_transfer name: "assigned_roles",#{' '}
+                       options: [["管理员", "admin"], ["编辑", "editor"], ["作者", "author"], ["访客", "guest"]],
+                       selected: ["admin"],
+                       left_title: "可选角色",
+                       right_title: "已分配角色" %>
+    RUBY
+  end
+
+  def transfer_disabled_code
+    <<~RUBY
+      <%= ant_transfer name: "locked_tags",#{' '}
+                       options: [["Ruby", "ruby"], ["Rails", "rails"], ["JavaScript", "js"]],
+                       selected: ["ruby", "rails"],
+                       disabled: true,
+                       left_title: "所有标签",
+                       right_title: "已选标签" %>
+    RUBY
+  end
+
+  def transfer_custom_code
+    <<~RUBY
+      <%= ant_transfer name: "features",#{' '}
+                       options: [["特性 A", "feature_a"], ["特性 B", "feature_b"], ["特性 C", "feature_c"], ["特性 D", "feature_d"]],
+                       selected: ["feature_a"],
+                       left_title: "未启用",
+                       right_title: "已启用",
+                       class: "shadow-lg rounded-lg" %>
+    RUBY
+  end
+
+  # Form 代码示例
+  def form_basic_code
+    <<~RUBY
+      <%= ant_form_for @user, url: user_path(@user) do |f| %>
+        <div>
+          <label>Name</label>
+          <%= f.input :name, placeholder: "Enter your name" %>
+        </div>
+        <div>
+          <label>Email</label>
+          <%= f.input :email, type: :email %>
+        </div>
+        <%= f.submit "Submit" %>
+      <% end %>
+    RUBY
+  end
+
+  def form_validation_code
+    <<~RUBY
+      <%= ant_form_for @user, url: user_path(@user) do |f| %>
+        <div>
+          <label>Email</label>
+          <%= f.input :email %>
+          <!-- 验证失败时自动显示红色边框和错误信息 -->
+        </div>
+        <div>
+          <label>Age</label>
+          <%= f.input :age, type: :number %>
+        </div>
+      <% end %>
+    RUBY
+  end
+
+  def form_complete_code
+    <<~RUBY
+      <%= ant_form_for @user, url: user_path(@user) do |f| %>
+        <div>
+          <%= f.input :name %>
+        </div>
+        <div>
+          <%= f.select :role, [["Admin", "admin"], ["Editor", "editor"]] %>
+        </div>
+        <div>
+          <%= f.date_picker :birthday %>
+        </div>
+        <div>
+          <%= f.checkbox :active, label: "Active Account" %>
+        </div>
+        <%= f.submit "Save Changes" %>
+      <% end %>
+    RUBY
+  end
+
+  def form_all_components_code
+    <<~RUBY
+      <%= ant_form_for @user, url: user_path(@user) do |f| %>
+        <!-- Input 输入框 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <%= f.input :name, placeholder: "Enter your name" %>
+        </div>
+      #{'  '}
+        <!-- Input with Type 带类型的输入框 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <%= f.input :email, type: :email, placeholder: "your@email.com" %>
+        </div>
+      #{'  '}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <%= f.input :password, type: :password, placeholder: "Enter password" %>
+        </div>
+      #{'  '}
+        <!-- Select 下拉选择 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+          <%= f.select :role, [["Admin", "admin"], ["Editor", "editor"], ["Viewer", "viewer"]] %>
+        </div>
+      #{'  '}
+        <!-- DatePicker 日期选择 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
+          <%= f.date_picker :birthday %>
+        </div>
+      #{'  '}
+        <!-- Transfer 穿梭框 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
+          <%= f.transfer :permissions,#{' '}
+                         options: [["View", "view"], ["Edit", "edit"], ["Delete", "delete"], ["Manage", "manage"]],
+                         left_title: "Available",
+                         right_title: "Assigned" %>
+        </div>
+      #{'  '}
+        <!-- Switch 开关 -->
+        <div class="flex items-center">
+          <%= f.switch :active, label: "Active Account" %>
+        </div>
+      #{'  '}
+        <!-- Checkbox 复选框 -->
+        <div class="flex items-center">
+          <%= f.checkbox :newsletter, label: "Subscribe to newsletter" %>
+        </div>
+      #{'  '}
+        <!-- Radio Button 单选按钮 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+          <div class="space-y-2">
+            <%= f.radio_button :gender, "male", label: "Male" %>
+            <%= f.radio_button :gender, "female", label: "Female" %>
+            <%= f.radio_button :gender, "other", label: "Other" %>
+          </div>
+        </div>
+      #{'  '}
+        <!-- Submit 提交按钮 -->
+        <%= f.submit "Save All", type: :primary %>
+      <% end %>
+    RUBY
+  end
+
+  # Upload Examples
+  def upload_basic_code
+    <<~RUBY
+      <%= ant_upload name: "document" do %>
+        Support for a single or bulk upload.
+      <% end %>
+    RUBY
+  end
+
+  def upload_file_multiple_code
+    <<~RUBY
+      <%= ant_upload name: "documents[]", multiple: true, max_count: 5, max_size: 10 do %>
+        Maximum 5 files, each file size should not exceed 10MB.
+      <% end %>
+    RUBY
+  end
+
+  def upload_image_basic_code
+    <<~RUBY
+      <%= ant_upload name: "avatar",#{' '}
+                     mode: :image,#{' '}
+                     list_type: :"picture-card",
+                     max_count: 1 %>
+    RUBY
+  end
+
+  def upload_image_gallery_code
+    <<~RUBY
+      <%= ant_upload name: "gallery[]",#{' '}
+                     mode: :image,#{' '}
+                     list_type: :"picture-card",
+                     multiple: true,
+                     max_count: 8,
+                     max_size: 5 do %>
+        Upload images (Max 8 files, 5MB each)
+      <% end %>
+    RUBY
+  end
+
+  def upload_disabled_code
+    <<~RUBY
+      <%= ant_upload name: "locked_file", disabled: true %>
+    RUBY
+  end
+
+  def upload_custom_accept_code
+    <<~RUBY
+      <%= ant_upload name: "pdf_file", accept: ".pdf,.doc,.docx" do %>
+        Only PDF and Word documents are allowed.
+      <% end %>
+    RUBY
+  end
+
+  # Image Examples
+  def image_basic_code
+    <<~RUBY
+      <%= ant_image src: "https://via.placeholder.com/400x300", alt: "Example image" %>
+    RUBY
+  end
+
+  def image_with_size_code
+    <<~RUBY
+      <%= ant_image src: "https://via.placeholder.com/800x600",#{' '}
+                    alt: "Resized image",#{' '}
+                    width: 300,#{' '}
+                    height: 200 %>
+    RUBY
+  end
+
+  def image_preview_code
+    <<~RUBY
+      <%= ant_image src: "https://via.placeholder.com/600x400",#{' '}
+                    alt: "Preview image",#{' '}
+                    preview: true,
+                    width: 200 %>
+    RUBY
+  end
+
+  def image_fallback_code
+    <<~RUBY
+      <%= ant_image src: "https://invalid-url.com/broken.jpg",#{' '}
+                    alt: "Image with fallback",#{' '}
+                    fallback: "https://via.placeholder.com/400x300?text=Fallback",
+                    width: 300 %>
+    RUBY
+  end
+
+  # Empty Examples
+  def empty_basic_code
+    "<%= ant_empty %>"
+  end
+
+  def empty_custom_description_code
+    <<~RUBY
+      <%= ant_empty description: "No products found" %>
+    RUBY
+  end
+
+  def empty_simple_code
+    <<~RUBY
+      <%= ant_empty description: "No data", image: :simple %>
+    RUBY
+  end
+
+  def empty_with_action_code
+    <<~RUBY
+      <%= ant_empty description: "No items yet" do %>
+        <%= ant_button "Create New", type: :primary %>
+      <% end %>
+    RUBY
+  end
+
+  def empty_custom_image_code
+    <<~RUBY
+      <%= ant_empty description: "Custom empty state",#{' '}
+                    image: "https://via.placeholder.com/300x200?text=Custom" %>
+    RUBY
+  end
+
+  # Badge Examples
+  def badge_basic_code
+    <<~RUBY
+      <%= ant_badge count: 5 do %>
+        <%= ant_button "通知", type: :default %>
+      <% end %>
+    RUBY
+  end
+
+  def badge_standalone_code
+    <<~RUBY
+      <%= ant_badge count: 25 %>
+      <%= ant_badge count: 4, color: :blue %>
+      <%= ant_badge count: 109, color: :green %>
+    RUBY
+  end
+
+  def badge_max_code
+    <<~RUBY
+      <%= ant_badge count: 99 do %>
+        <%= ant_button "通知", type: :default %>
+      <% end %>
+
+      <%= ant_badge count: 100 do %>
+        <%= ant_button "通知", type: :default %>
+      <% end %>
+
+      <%= ant_badge count: 1000, max: 999 do %>
+        <%= ant_button "通知", type: :default %>
+      <% end %>
+    RUBY
+  end
+
+  def badge_dot_code
+    <<~RUBY
+      <%= ant_badge dot: true do %>
+        <%= ant_button "通知", type: :default %>
+      <% end %>
+    RUBY
+  end
+
+  def badge_colors_code
+    <<~RUBY
+      <%= ant_badge count: 5, color: :blue do %>
+        <%= ant_button "Blue", type: :default %>
+      <% end %>
+
+      <%= ant_badge count: 5, color: :green do %>
+        <%= ant_button "Green", type: :default %>
+      <% end %>
+
+      <%= ant_badge count: 5, color: :red do %>
+        <%= ant_button "Red", type: :default %>
+      <% end %>
+    RUBY
+  end
+
+  def badge_status_code
+    <<~RUBY
+      <%= ant_badge status: :success, text: "Success" %>
+      <%= ant_badge status: :error, text: "Error" %>
+      <%= ant_badge status: :default, text: "Default" %>
+      <%= ant_badge status: :processing, text: "Processing" %>
+      <%= ant_badge status: :warning, text: "Warning" %>
     RUBY
   end
 end

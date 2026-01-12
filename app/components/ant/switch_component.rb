@@ -1,7 +1,7 @@
 module Ant
   class SwitchComponent < ViewComponent::Base
     def initialize(name: nil, checked: false, disabled: false, loading: false,
-                   size: :default, checked_text: nil, unchecked_text: nil, **html_options)
+                   size: :default, checked_text: nil, unchecked_text: nil, label: nil, **html_options)
       @name = name
       @checked = checked
       @disabled = disabled
@@ -9,6 +9,7 @@ module Ant
       @size = size # :default or :small
       @checked_text = checked_text
       @unchecked_text = unchecked_text
+      @label = label
       @html_options = html_options
     end
 

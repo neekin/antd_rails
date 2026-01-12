@@ -1,0 +1,48 @@
+<div class="relative w-full <%= @html_options[:class] %>"
+     data-controller="ant--date-picker">
+  <!-- Hidden input for form submission -->
+  <input type="hidden" name="<%= @name %>" value="<%= @value %>" data-ant--date-picker-target="input" <%= "disabled" if @disabled %> />
+
+  <!-- Trigger -->
+  <button type="button"
+          data-ant--date-picker-target="trigger"
+          data-action="click->ant--date-picker#toggle"
+          class="w-full text-left flex items-center justify-between px-[11px] py-[4px] min-h-[32px] text-[14px] rounded-[6px] border transition-all outline-none bg-white <%= @disabled ? 'bg-[#f5f5f5] border-[#d9d9d9] cursor-not-allowed text-[rgba(0,0,0,0.25)]' : 'border-[#d9d9d9] hover:border-[#4096ff] focus:border-[#4096ff] focus:shadow-[0_0_0_2px_rgba(5,145,255,0.1)] cursor-pointer text-[rgba(0,0,0,0.88)]' %>"
+          <%= "disabled" if @disabled %>>
+    <span class="truncate block flex-1" data-ant--date-picker-target="label"><%= display_text %></span>
+    <span class="ml-2 text-[rgba(0,0,0,0.25)]">
+      <svg viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor">
+        <path d="M832 112H736V64a32 32 0 10-64 0v48H352V64a32 32 0 10-64 0v48H192a80.09 80.09 0 00-80 80v640a80.09 80.09 0 0080 80h640a80.09 80.09 0 0080-80V192a80.09 80.09 0 00-80-80zm16 720a16.02 16.02 0 01-16 16H192a16.02 16.02 0 01-16-16V384h672z"/>
+      </svg>
+    </span>
+  </button>
+
+  <!-- Panel -->
+  <div data-ant--date-picker-target="panel"
+       class="hidden absolute z-[9999] mt-1 bg-white rounded-lg overflow-hidden origin-top-left shadow-[0_3px_6px_-4px_rgba(0,0,0,0.12),0_6px_16px_0_rgba(0,0,0,0.08),0_9px_28px_8px_rgba(0,0,0,0.05)]">
+    <div class="p-3 w-[280px]">
+      <div class="flex items-center justify-between mb-2 text-[14px] text-gray-700">
+        <span><%= @date.strftime("%B %Y") %></span>
+      </div>
+      <div class="grid grid-cols-7 gap-1 text-center text-[12px] text-gray-500 mb-1">
+        <% %w[Su Mo Tu We Th Fr Sa].each do |d| %>
+          <div class="py-1"><%= d %></div>
+        <% end %>
+      </div>
+      <% start_of_month = @date.beginning_of_month
+         start_day = start_of_month.wday
+         days_in_month = @date.end_of_month.day %>
+      <div class="grid grid-cols-7 gap-1 text-center">
+        <% start_day.times do %>
+          <div class="py-2"></div>
+        <% end %>
+        <% (1..days_in_month).each do |day| %>
+          <% is_selected = (@value.present? && @date.strftime('%Y-%m') == @value.to_s[0,7] && @value.to_s.split('-').last.to_i == day) %>
+          <div class="py-2 rounded cursor-pointer text-[13px] <%= is_selected ? 'bg-[#1677ff] text-white' : 'hover:bg-[#f5f5f5] text-gray-700' %>">
+            <%= day %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

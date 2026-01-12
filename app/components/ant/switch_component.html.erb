@@ -1,4 +1,4 @@
-<div class="inline-flex items-center <%= @html_options[:class] %>"
+<div class="inline-flex items-center gap-2 <%= @html_options[:class] %>"
      data-controller="ant--switch"
      data-ant--switch-checked-value="<%= @checked %>"
      data-ant--switch-disabled-value="<%= @disabled || @loading %>">
@@ -35,4 +35,9 @@
     <!-- Handle (圆形滑块) -->
     <span class="<%= handle_classes %>" data-ant--switch-target="handle"></span>
   </button>
+  
+  <!-- Label -->
+  <% if @label.present? %>
+    <span class="text-sm text-gray-700 <%= 'opacity-40' if @disabled %>"><%= @label %></span>
+  <% end %>
 </div>

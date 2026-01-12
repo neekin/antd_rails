@@ -21,6 +21,18 @@
 <% end %>
 
 <%= render Ui::ExampleComponent.new(
+  title: "带标签文本",
+  description: "使用 label 参数在开关旁显示说明文字。",
+  language: :erb,
+  code: switch_with_label_code
+) do %>
+  <div class="space-y-3">
+    <%= ant_switch name: "notifications", checked: true, label: "Enable notifications" %>
+    <%= ant_switch name: "dark_mode", checked: false, label: "Dark mode" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
   title: "不可用",
   description: "Switch 失效状态。",
   language: :erb,
@@ -76,6 +88,7 @@
   <% api.row "size", "开关大小，可选值：:default, :small", "Symbol", ":default" %>
   <% api.row "checked_text", "选中时的内容", "String", "nil" %>
   <% api.row "unchecked_text", "非选中时的内容", "String", "nil" %>
+  <% api.row "label", "开关旁边的标签文字", "String", "nil" %>
   <% api.row "class", "自定义样式类名", "String", "nil" %>
 <% end %>
 

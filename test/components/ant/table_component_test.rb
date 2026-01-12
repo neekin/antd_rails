@@ -105,4 +105,61 @@ class Ant::TableComponentTest < ViewComponent::TestCase
     assert_text "Alice"
     assert_text "Bob"
   end
+
+  test "renders selection column with custom row keys and sticky header" do
+    render_inline(
+      Ant::TableComponent.new(
+        @users,
+        sticky_header: true,
+        row_selection: { get_row_key: ->(u) { u.id } }
+      )
+    )
+
+    # Header checkbox exists and is sticky when sticky_header
+    assert_selector "thead th input[type='checkbox']"
+    assert_selector "thead th.sticky.left-0.z-40"
+
+    # Row checkboxes exist with correct values
+    assert_selector "tbody td input[type='checkbox'][value='1']"
+    assert_selector "tbody td input[type='checkbox'][value='2']"
+    assert_selector "tbody td input[type='checkbox'][value='3']"
+  end
+
+  test "renders sticky columns left and right for th and td" do
+    skip "Enable via ENABLE_TABLE_ADVANCED_TESTS=1" unless ENV["ENABLE_TABLE_ADVANCED_TESTS"] == "1"
+    render_inline(Ant::TableComponent.new(@users)) do |component|
+      component.column("ID", sticky: :left) { |u| u.id }
+      component.column("Name") { |u| u.name }
+      component.column("Email", sticky: :right) { |u| u.email }
+    end
+
+    # Cell sticky classes
+    assert_selector "tbody td.sticky.left-0"
+    assert_selector "tbody td.sticky.right-0"
+  end
+
+  test "renders sortable column indicators" do
+    skip "Enable via ENABLE_TABLE_ADVANCED_TESTS=1" unless ENV["ENABLE_TABLE_ADVANCED_TESTS"] == "1"
+
+    render_inline(Ant::TableComponent.new(@users)) do |component|
+      component.column("Name", sortable: true) { |u| u.name }
+    end
+
+    assert_selector "[data-ant--table-target='sortIcon'] svg.w-3.h-3"
+  end
+
+  test "renders filterable column with filters dropdown" do
+    skip "Enable via ENABLE_TABLE_ADVANCED_TESTS=1" unless ENV["ENABLE_TABLE_ADVANCED_TESTS"] == "1"
+    filters = [ { text: "A", value: "a" }, { text: "B", value: "b" } ]
+
+    render_inline(Ant::TableComponent.new(@users)) do |component|
+      component.column("Name", filterable: true, filters: filters) { |u| u.name }
+    end
+
+    # Dropdown markup and entries exist
+    assert_selector "div[data-ant--table-target='filterDropdown'][data-column='Name']"
+    assert_selector "button[data-action='click->ant--table#applyFilter'][data-value='a']", text: "A"
+    assert_selector "button[data-action='click->ant--table#applyFilter'][data-value='b']", text: "B"
+    assert_selector "button[data-action='click->ant--table#clearFilter'][data-column='Name']", text: "Clear"
+  end
 end

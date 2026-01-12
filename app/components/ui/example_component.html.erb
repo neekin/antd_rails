@@ -1,4 +1,4 @@
-<div class="border border-gray-200 rounded-lg overflow-hidden mb-8 shadow-sm">
+<div class="border border-gray-200 rounded-lg mb-8 shadow-sm">
   <div class="bg-gray-50 border-b border-gray-200 px-4 py-3 flex justify-between items-center">
     <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide"><%= @title %></h3>
     <% if @description %>
@@ -12,7 +12,7 @@
   </div>
 
   <!-- Code Area -->
-  <div class="bg-gray-900 relative group">
+  <div class="bg-gray-900 relative group overflow-hidden">
     <!-- Language Badge -->
     <div class="absolute top-2 right-2 px-2 py-1 bg-gray-700 text-gray-300 text-[10px] font-mono rounded uppercase opacity-50 group-hover:opacity-100 transition-opacity select-none">
       <%= @language %>

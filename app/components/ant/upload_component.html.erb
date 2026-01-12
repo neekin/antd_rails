@@ -1,0 +1,53 @@
+<div class="<%= container_classes %>"
+     data-controller="ant--upload"
+     data-ant--upload-mode-value="<%= @mode %>"
+     data-ant--upload-multiple-value="<%= @multiple %>"
+     data-ant--upload-max-size-value="<%= @max_size || 0 %>"
+     data-ant--upload-max-count-value="<%= @max_count || 0 %>"
+     data-ant--upload-disabled-value="<%= @disabled %>">
+  
+  <!-- Hidden File Input -->
+  <input type="file"
+         name="<%= @name %>"
+         accept="<%= @accept %>"
+         <%= 'multiple' if @multiple %>
+         <%= 'disabled' if @disabled %>
+         class="hidden"
+         data-ant--upload-target="fileInput"
+         data-action="change->ant--upload#handleFileSelect">
+  
+  <% if is_picture_card? %>
+    <!-- Picture Card Upload (for images) -->
+    <div class="flex flex-wrap gap-2" data-ant--upload-target="fileList">
+      <!-- File items will be inserted here -->
+    </div>
+    
+    <!-- Upload Button (Picture Card Style) -->
+    <button type="button"
+            class="w-[104px] h-[104px] border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-1 hover:border-[#1677ff] transition-colors <%= 'opacity-50 cursor-not-allowed' if @disabled %>"
+            data-ant--upload-target="uploadButton"
+            data-action="click->ant--upload#triggerFileInput"
+            <%= 'disabled' if @disabled %>>
+      <%= upload_icon %>
+      <span class="text-xs text-gray-600">Upload</span>
+    </button>
+  <% else %>
+    <!-- Default Upload Button -->
+    <%= helpers.ant_button type: :default, disabled: @disabled, class: "mb-2", data: { action: "click->ant--upload#triggerFileInput" } do %>
+      <%= upload_icon %>
+      <span class="ml-2"><%= upload_button_text %></span>
+    <% end %>
+    
+    <!-- File List -->
+    <div class="space-y-2" data-ant--upload-target="fileList">
+      <!-- File items will be inserted here -->
+    </div>
+  <% end %>
+  
+  <!-- Hint Text -->
+  <% if content.present? %>
+    <div class="mt-2 text-sm text-gray-500">
+      <%= content %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,87 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Image 图片",
+  description: "可预览的图片展示组件。",
+  when_to_use: [
+    "需要展示图片时。",
+    "加载大图时显示 loading 或加载失败时容错处理。",
+    "需要图片预览功能时。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本使用",
+  description: "最简单的用法。",
+  language: :erb,
+  code: image_basic_code
+) do %>
+  <div>
+    <%= ant_image src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%234A90E2'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='32' fill='white'%3E400 x 300%3C/text%3E%3C/svg%3E", alt: "Example image" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "自定义尺寸",
+  description: "通过 width 和 height 控制图片尺寸。",
+  language: :erb,
+  code: image_with_size_code
+) do %>
+  <div>
+    <%= ant_image src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect width='800' height='600' fill='%2350C878'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='48' fill='white'%3E800 x 600%3C/text%3E%3C/svg%3E", 
+                  alt: "Resized image", 
+                  width: 300, 
+                  height: 200 %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "图片预览",
+  description: "点击图片可以预览大图，支持关闭。",
+  language: :erb,
+  code: image_preview_code
+) do %>
+  <div>
+    <%= ant_image src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='600' height='400' fill='%23F5A623'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='40' fill='white'%3E600 x 400%3C/text%3E%3C/svg%3E", 
+                  alt: "Preview image", 
+                  preview: true,
+                  width: 200 %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "加载失败容错",
+  description: "图片加载失败时显示 fallback 图片。",
+  language: :erb,
+  code: image_fallback_code
+) do %>
+  <div>
+    <%= ant_image src: "https://invalid-url.com/broken.jpg", 
+                  alt: "Image with fallback", 
+                  fallback: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23E74C3C'/%3E%3Ctext x='50%25' y='45%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='32' fill='white'%3EFallback%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='24' fill='white'%3E400 x 300%3C/text%3E%3C/svg%3E",
+                  width: 300 %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "src", "图片地址（必填）", "String", "-" %>
+  <% api.row "alt", "图片描述", "String", "\"\"" %>
+  <% api.row "width", "图片宽度（像素）", "Integer", "nil" %>
+  <% api.row "height", "图片高度（像素）", "Integer", "nil" %>
+  <% api.row "preview", "是否支持预览", "Boolean", "false" %>
+  <% api.row "placeholder", "加载占位图 URL", "String", "默认 SVG" %>
+  <% api.row "fallback", "加载失败容错图 URL", "String", "默认 SVG" %>
+  <% api.row "class", "自定义样式类名", "String", "nil" %>
+<% end %>
+
+<div class="mt-8 p-4 bg-blue-50 rounded-lg">
+  <h4 class="font-semibold text-blue-900 mb-2">💡 使用说明</h4>
+  <ul class="list-disc list-inside text-blue-800 space-y-1">
+    <li><strong>懒加载</strong>：自动使用 loading="lazy" 属性优化性能。</li>
+    <li><strong>占位图</strong>：加载过程中显示 placeholder，默认提供灰色占位 SVG。</li>
+    <li><strong>容错处理</strong>：加载失败时自动切换到 fallback 图片。</li>
+    <li><strong>预览功能</strong>：设置 preview: true 后，鼠标悬停显示预览图标，点击打开全屏预览。</li>
+    <li><strong>响应式</strong>：图片默认使用 object-cover，自适应容器大小。</li>
+  </ul>
+</div>

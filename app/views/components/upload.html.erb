@@ -1,0 +1,137 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Upload 上传",
+  description: "文件选择上传和拖拽上传控件。",
+  when_to_use: [
+    "上传是将信息（网页、文字、图片、视频等）通过网页或者上传工具发布到远程服务器上的过程。",
+    "当需要上传一个或一些文件时。",
+    "当需要展现上传的进度时。",
+    "当需要使用拖拽交互时。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本文件上传",
+  description: "最简单的文件上传组件。",
+  language: :erb,
+  code: upload_basic_code
+) do %>
+  <div>
+    <%= ant_upload name: "document" do %>
+      Support for a single or bulk upload.
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "多文件上传（带限制）",
+  description: "可以限制上传文件的数量和大小。",
+  language: :erb,
+  code: upload_file_multiple_code
+) do %>
+  <div>
+    <%= ant_upload name: "documents[]", multiple: true, max_count: 5, max_size: 10 do %>
+      Maximum 5 files, each file size should not exceed 10MB.
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "图片上传（单个）",
+  description: "使用图片墙样式上传单张图片，选择后可预览。",
+  language: :erb,
+  code: upload_image_basic_code
+) do %>
+  <div>
+    <%= ant_upload name: "avatar",
+                   mode: :image,
+                   list_type: :"picture-card",
+                   max_count: 1 %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "图片墙（多图上传）",
+  description: "使用 list_type='picture-card' 展示图片列表。",
+  language: :erb,
+  code: upload_image_gallery_code
+) do %>
+  <div>
+    <%= ant_upload name: "gallery[]", 
+                   mode: :image, 
+                   list_type: :"picture-card",
+                   multiple: true,
+                   max_count: 8,
+                   max_size: 5 do %>
+      Upload images (Max 8 files, 5MB each)
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "禁用状态",
+  description: "禁用上传功能。",
+  language: :erb,
+  code: upload_disabled_code
+) do %>
+  <div>
+    <%= ant_upload name: "locked_file", disabled: true %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "限制文件类型",
+  description: "使用 accept 属性限制可上传的文件类型。",
+  language: :erb,
+  code: upload_custom_accept_code
+) do %>
+  <div>
+    <%= ant_upload name: "pdf_file", accept: ".pdf,.doc,.docx" do %>
+      Only PDF and Word documents are allowed.
+    <% end %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+
+<h4 class="font-bold text-gray-700 mt-6 mb-2">ant_upload</h4>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "name", "表单字段名称（必填）", "String", "-" %>
+  <% api.row "mode", "上传模式：:file（文件）或 :image（图片）", "Symbol", ":file" %>
+  <% api.row "accept", "接受的文件类型，如 'image/*' 或 '.pdf,.doc'", "String", "根据 mode 自动设置" %>
+  <% api.row "multiple", "是否支持多文件上传", "Boolean", "false" %>
+  <% api.row "max_size", "单个文件最大大小限制（MB）", "Integer", "nil" %>
+  <% api.row "max_count", "最多上传文件数量", "Integer", "nil" %>
+  <% api.row "disabled", "是否禁用", "Boolean", "false" %>
+  <% api.row "list_type", "上传列表的内建样式：:text, :picture, :picture-card", "Symbol", ":text" %>
+  <% api.row "class", "自定义样式类名", "String", "nil" %>
+<% end %>
+
+<h4 class="font-bold text-gray-700 mt-6 mb-2">Form Builder 方法</h4>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "f.upload", "文件上传字段", "method, options", "-" %>
+  <% api.row "f.image_upload", "图片上传字段（默认 picture-card 样式）", "method, options", "-" %>
+<% end %>
+
+<div class="mt-8 p-4 bg-blue-50 rounded-lg">
+  <h4 class="font-semibold text-blue-900 mb-2">💡 使用说明</h4>
+  <ul class="list-disc list-inside text-blue-800 space-y-1">
+    <li><strong>mode: :file</strong> - 普通文件上传，按钮样式。</li>
+    <li><strong>mode: :image</strong> - 图片上传，自动设置 accept="image/*"。</li>
+    <li><strong>list_type: :picture-card</strong> - 图片墙样式，适合多图上传场景。</li>
+    <li><strong>max_size</strong> - 设置后会在客户端验证文件大小，超出会提示。</li>
+    <li><strong>max_count</strong> - 达到上传数量限制后，上传按钮会自动隐藏。</li>
+    <li><strong>Form Builder</strong> - 使用 f.upload 或 f.image_upload 自动绑定字段名和错误。</li>
+    <li><strong>注意</strong> - 此组件仅处理前端选择和预览，实际上传需要配合后端 API。</li>
+  </ul>
+</div>
+
+<div class="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+  <h4 class="font-semibold text-yellow-900 mb-2">⚠️ 后端集成说明</h4>
+  <ul class="list-disc list-inside text-yellow-800 space-y-1">
+    <li>当前版本仅实现文件选择和客户端预览功能。</li>
+    <li>实际文件上传需要配合后端 API（如 Active Storage 或 CarrierWave）。</li>
+    <li>建议在表单提交时使用 multipart/form-data 格式。</li>
+  </ul>
+</div>

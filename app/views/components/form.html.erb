@@ -1,0 +1,251 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Form 表单",
+  description: "具有数据收集、校验和提交功能的表单，包含复选框、单选框、输入框、下拉选择框等元素。",
+  when_to_use: [
+    "用于创建一个实体或收集信息。",
+    "需要对输入的数据类型进行校验时。",
+    "使用 ant_form_for 可以自动绑定 Model 数据和显示验证错误。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本使用",
+  description: "使用 ant_form_for 创建表单，自动绑定 Model 数据。",
+  language: :erb,
+  code: form_basic_code
+) do %>
+  <div class="max-w-2xl w-full">
+    <% user_struct = Struct.new(:name, :email, :persisted?, keyword_init: true).new(
+         name: "John Doe",
+         email: "john@example.com",
+         persisted?: true
+       )
+       def user_struct.errors; @errors ||= ActiveModel::Errors.new(self); end
+       def user_struct.model_name; ActiveModel::Name.new(self.class, nil, "User"); end
+       def user_struct.to_key; persisted? ? [1] : nil; end
+       def user_struct.to_param; persisted? ? "1" : nil; end
+    %>
+    <%= ant_form_for user_struct, url: "#" do |f| %>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <%= f.input :name, placeholder: "Enter your name" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <%= f.input :email, type: :email, placeholder: "Enter your email" %>
+        </div>
+        <%= f.submit "Submit", type: :primary %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "表单验证",
+  description: "当表单字段有验证错误时，自动显示红色边框和错误信息。",
+  language: :erb,
+  code: form_validation_code
+) do %>
+  <div class="max-w-2xl w-full">
+    <% user_struct = Struct.new(:email, :age, :persisted?, keyword_init: true).new(
+         email: "",
+         age: nil,
+         persisted?: false
+       )
+       def user_struct.errors
+         @errors ||= begin
+           errors = ActiveModel::Errors.new(self)
+           errors.add(:email, "can't be blank")
+           errors.add(:age, "must be greater than 0")
+           errors
+         end
+       end
+       def user_struct.model_name; ActiveModel::Name.new(self.class, nil, "User"); end
+       def user_struct.to_key; persisted? ? [1] : nil; end
+       def user_struct.to_param; persisted? ? "1" : nil; end
+    %>
+    <%= ant_form_for user_struct, url: "#" do |f| %>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <%= f.input :email, placeholder: "Enter email" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+          <%= f.input :age, type: :number, placeholder: "Enter age" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "所有表单组件",
+  description: "展示 Form Builder 支持的所有表单元素类型。",
+  language: :erb,
+  code: form_all_components_code
+) do %>
+  <div class="max-w-3xl w-full">
+    <% user_struct = Struct.new(:name, :email, :password, :role, :birthday, :permissions, :active, :newsletter, :gender, :persisted?, keyword_init: true).new(
+         name: "Jane Doe",
+         email: "jane@example.com",
+         password: "",
+         role: "editor",
+         birthday: Date.new(1995, 6, 15),
+         permissions: ["view", "edit"],
+         active: true,
+         newsletter: false,
+         gender: "female",
+         persisted?: true
+       )
+       def user_struct.errors; @errors ||= ActiveModel::Errors.new(self); end
+       def user_struct.model_name; ActiveModel::Name.new(self.class, nil, "User"); end
+       def user_struct.to_key; persisted? ? [1] : nil; end
+       def user_struct.to_param; persisted? ? "1" : nil; end
+    %>
+    <%= ant_form_for user_struct, url: "#" do |f| %>
+      <div class="space-y-4">
+        <!-- Input 输入框 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <%= f.input :name, placeholder: "Enter your name" %>
+        </div>
+        
+        <!-- Input with Type 带类型的输入框 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <%= f.input :email, type: :email, placeholder: "your@email.com" %>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <%= f.input :password, type: :password, placeholder: "Enter password" %>
+        </div>
+        
+        <!-- Select 下拉选择 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+          <%= f.select :role, [["Admin", "admin"], ["Editor", "editor"], ["Viewer", "viewer"]] %>
+        </div>
+        
+        <!-- DatePicker 日期选择 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
+          <%= f.date_picker :birthday %>
+        </div>
+        
+        <!-- Transfer 穿梭框 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
+          <%= f.transfer :permissions, 
+                         options: [["View", "view"], ["Edit", "edit"], ["Delete", "delete"], ["Manage", "manage"]],
+                         left_title: "Available",
+                         right_title: "Assigned" %>
+        </div>
+        
+        <!-- Switch 开关 -->
+        <div class="flex items-center">
+          <%= f.switch :active, label: "Active Account" %>
+        </div>
+        
+        <!-- Checkbox 复选框 -->
+        <div class="flex items-center">
+          <%= f.checkbox :newsletter, label: "Subscribe to newsletter" %>
+        </div>
+        
+        <!-- Radio Button 单选按钮 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+          <div class="space-y-2">
+            <%= f.radio_button :gender, "male", label: "Male" %>
+            <%= f.radio_button :gender, "female", label: "Female" %>
+            <%= f.radio_button :gender, "other", label: "Other" %>
+          </div>
+        </div>
+        
+        <!-- Submit 提交按钮 -->
+        <%= f.submit "Save All", type: :primary %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "完整表单示例",
+  description: "包含各种类型的表单控件。",
+  language: :erb,
+  code: form_complete_code
+) do %>
+  <div class="max-w-2xl w-full">
+    <% user_struct = Struct.new(:name, :role, :birthday, :active, :persisted?, keyword_init: true).new(
+         name: "Jane Doe",
+         role: "editor",
+         birthday: Date.new(1995, 6, 15),
+         active: true,
+         persisted?: true
+       )
+       def user_struct.errors; @errors ||= ActiveModel::Errors.new(self); end
+       def user_struct.model_name; ActiveModel::Name.new(self.class, nil, "User"); end
+       def user_struct.to_key; persisted? ? [1] : nil; end
+       def user_struct.to_param; persisted? ? "1" : nil; end
+    %>
+    <%= ant_form_for user_struct, url: "#" do |f| %>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <%= f.input :name %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+          <%= f.select :role, [["Admin", "admin"], ["Editor", "editor"], ["Viewer", "viewer"]] %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
+          <%= f.date_picker :birthday %>
+        </div>
+        <div class="flex items-center">
+          <%= f.checkbox :active, label: "Active Account" %>
+        </div>
+        <%= f.submit "Save Changes", type: :primary %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+
+<h4 class="font-bold text-gray-700 mt-6 mb-2">ant_form_for / ant_form_with</h4>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "record", "Model 对象实例", "ActiveRecord::Base", "必填" %>
+  <% api.row "url", "表单提交地址", "String", "必填" %>
+  <% api.row "method", "HTTP 方法", "Symbol (:post, :patch, :put, :delete)", "自动推断" %>
+  <% api.row "html", "表单 HTML 属性", "Hash", "{}" %>
+<% end %>
+
+<h4 class="font-bold text-gray-700 mt-6 mb-2">Form Builder 方法</h4>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "f.input", "文本输入框", "method, options", "-" %>
+  <% api.row "f.select", "下拉选择框", "method, choices, options", "-" %>
+  <% api.row "f.date_picker", "日期选择器", "method, options", "-" %>
+  <% api.row "f.upload", "文件上传", "method, options", "-" %>
+  <% api.row "f.image_upload", "图片上传", "method, options", "-" %>
+  <% api.row "f.checkbox", "复选框", "method, options", "-" %>
+  <% api.row "f.switch", "开关", "method, options", "-" %>
+  <% api.row "f.radio_button", "单选按钮", "method, tag_value, options", "-" %>
+  <% api.row "f.transfer", "穿梭框", "method, options", "-" %>
+  <% api.row "f.submit", "提交按钮", "label, options", "-" %>
+<% end %>
+
+<div class="mt-8 p-4 bg-blue-50 rounded-lg">
+  <h4 class="font-semibold text-blue-900 mb-2">💡 使用说明</h4>
+  <ul class="list-disc list-inside text-blue-800 space-y-1">
+    <li><strong>自动数据绑定</strong>：表单字段会自动从 Model 对象读取当前值。</li>
+    <li><strong>验证错误显示</strong>：当字段有验证错误时，自动添加红色边框并在下方显示错误信息。</li>
+    <li><strong>字段名称</strong>：自动生成 Rails 标准的字段名称格式，如 <code>user[name]</code>。</li>
+    <li><strong>提交按钮</strong>：新建记录时默认显示 "Create"，编辑时显示 "Update"，可自定义。</li>
+    <li><strong>与原生 form_for 兼容</strong>：用法与 Rails 原生 form_for 基本一致，只需替换方法名。</li>
+  </ul>
+</div>

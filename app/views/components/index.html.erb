@@ -11,10 +11,33 @@
     <div class="w-64 flex-shrink-0 sticky top-4">
        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
          <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 font-semibold text-gray-700">Components</div>
-         <nav class="p-2 space-y-1">
-           <a href="#general" class="block px-3 py-2 text-sm font-medium text-gray-900 bg-blue-50 text-blue-700 rounded-md">General</a>
-           <a href="#entry" class="block px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md">Data Entry</a>
-           <a href="#display" class="block px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md">Data Display</a>
+         <nav class="p-2 space-y-3">
+           <!-- General -->
+           <div>
+             <a href="#general" class="block px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 rounded-md">General</a>
+             <div class="ml-3 mt-1 space-y-1">
+               <a href="#button-doc" class="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md">Button 按钮</a>
+               <a href="#tag-doc" class="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md">Tag 标签</a>
+             </div>
+           </div>
+           
+           <!-- Data Entry -->
+           <div>
+             <a href="#entry" class="block px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 rounded-md">Data Entry</a>
+             <div class="ml-3 mt-1 space-y-1">
+               <a href="#input-doc" class="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md">Input 输入框</a>
+               <a href="#datepicker-doc" class="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md">DatePicker 日期选择器</a>
+               <a href="#transfer-doc" class="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md">Transfer 穿梭框</a>
+             </div>
+           </div>
+           
+           <!-- Data Display -->
+           <div>
+             <a href="#display" class="block px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 rounded-md">Data Display</a>
+             <div class="ml-3 mt-1 space-y-1">
+               <a href="#table-doc" class="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md">Table 表格</a>
+             </div>
+           </div>
          </nav>
        </div>
     </div>
@@ -129,7 +152,7 @@ ant_tag "Warning", color: :warning'
         <% t.with_item(label: "Data Entry", id: "entry") do %>
            <div class="space-y-16 py-8">
              <!-- Input Documentation -->
-             <section>
+             <section id="input-doc">
                <%= render Ui::ComponentHeaderComponent.new(
                 title: "Input 输入框",
                 description: "通过鼠标或键盘输入内容，是最基础的表单域的包装。",
@@ -162,6 +185,123 @@ ant_tag "Warning", color: :warning'
                 <% api.row "placeholder", "占位文本", "String", "nil" %>
               <% end %>
              </section>
+
+             <hr class="border-gray-200 my-12">
+
+             <!-- DatePicker Documentation -->
+             <section id="datepicker-doc">
+               <%= render Ui::ComponentHeaderComponent.new(
+                title: "DatePicker 日期选择器",
+                description: "输入或选择日期的控件。",
+                when_to_use: [
+                  "当用户需要输入一个日期时。",
+                  "需要选择特定日期时，提供日历面板进行可视化选择。"
+                ]
+              ) %>
+              
+              <%= render Ui::ExampleComponent.new(
+                title: "基本使用", 
+                code: 'ant_date_picker name: "user[birthday]", placeholder: "Select date"'
+              ) do %>
+                <div class="max-w-sm">
+                   <%= ant_date_picker name: "user[birthday]", placeholder: "Select date" %>
+                </div>
+              <% end %>
+
+              <%= render Ui::ExampleComponent.new(
+                title: "带默认值", 
+                code: 'ant_date_picker name: "appointment", value: Date.today'
+              ) do %>
+                <div class="max-w-sm">
+                   <%= ant_date_picker name: "appointment", value: Date.today, placeholder: "Select date" %>
+                </div>
+              <% end %>
+
+              <%= render Ui::ExampleComponent.new(
+                title: "禁用状态", 
+                code: 'ant_date_picker name: "locked_date", value: "2024-01-15", disabled: true'
+              ) do %>
+                <div class="max-w-sm">
+                   <%= ant_date_picker name: "locked_date", value: "2024-01-15", disabled: true, placeholder: "Disabled" %>
+                </div>
+              <% end %>
+
+               <h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+               <%= render Ui::ApiTableComponent.new do |api| %>
+                <% api.row "name", "表单字段名称", "String", "必填" %>
+                <% api.row "value", "默认选中的日期", "Date/Time/DateTime/String", "nil" %>
+                <% api.row "placeholder", "输入框占位符", "String", "\"Select date\"" %>
+                <% api.row "disabled", "是否禁用", "Boolean", "false" %>
+              <% end %>
+             </section>
+
+             <hr class="border-gray-200 my-12">
+
+             <!-- Transfer Documentation -->
+             <section id="transfer-doc">
+               <%= render Ui::ComponentHeaderComponent.new(
+                title: "Transfer 穿梭框",
+                description: "双栏穿梭选择器。",
+                when_to_use: [
+                  "需要在多个可选项中进行多选时。",
+                  "当选项过多时，使用双栏选择可以更清晰地展示选中和未选中的项。"
+                ]
+              ) %>
+              
+              <%= render Ui::ExampleComponent.new(
+                title: "基本使用", 
+                code: 'ant_transfer name: "permissions", 
+             options: [["查看", "view"], ["编辑", "edit"], ["删除", "delete"]],
+             selected: ["view"]'
+              ) do %>
+                <div class="max-w-2xl">
+                   <%= ant_transfer name: "permissions", 
+                                    options: [["查看用户", "view_users"], ["编辑用户", "edit_users"], ["删除用户", "delete_users"], ["管理角色", "manage_roles"]],
+                                    selected: ["view_users"] %>
+                </div>
+              <% end %>
+
+              <%= render Ui::ExampleComponent.new(
+                title: "自定义标题", 
+                code: 'ant_transfer name: "roles", 
+             options: [["管理员", "admin"], ["编辑", "editor"]],
+             selected: ["admin"],
+             left_title: "可选角色",
+             right_title: "已分配"'
+              ) do %>
+                <div class="max-w-2xl">
+                   <%= ant_transfer name: "roles", 
+                                    options: [["管理员", "admin"], ["编辑", "editor"], ["作者", "author"], ["访客", "guest"]],
+                                    selected: ["admin"],
+                                    left_title: "可选角色",
+                                    right_title: "已分配角色" %>
+                </div>
+              <% end %>
+
+              <%= render Ui::ExampleComponent.new(
+                title: "禁用状态", 
+                code: 'ant_transfer name: "locked", disabled: true'
+              ) do %>
+                <div class="max-w-2xl">
+                   <%= ant_transfer name: "locked_tags", 
+                                    options: [["Ruby", "ruby"], ["Rails", "rails"], ["JavaScript", "js"]],
+                                    selected: ["ruby", "rails"],
+                                    disabled: true,
+                                    left_title: "所有标签",
+                                    right_title: "已选标签" %>
+                </div>
+              <% end %>
+
+               <h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+               <%= render Ui::ApiTableComponent.new do |api| %>
+                <% api.row "name", "表单字段名称", "String", "必填" %>
+                <% api.row "options", "选项列表", "Array", "[]" %>
+                <% api.row "selected", "默认选中的值数组", "Array", "[]" %>
+                <% api.row "left_title", "左侧面板标题", "String", "\"Source\"" %>
+                <% api.row "right_title", "右侧面板标题", "String", "\"Target\"" %>
+                <% api.row "disabled", "是否禁用", "Boolean", "false" %>
+              <% end %>
+             </section>
            </div>
         <% end %>
 
@@ -172,7 +312,7 @@ ant_tag "Warning", color: :warning'
            <div class="space-y-16 py-8">
              
              <!-- Table Documentation -->
-             <section>
+             <section id="table-doc">
                <%= render Ui::ComponentHeaderComponent.new(
                 title: "Table 表格",
                 description: "展示行列数据。",

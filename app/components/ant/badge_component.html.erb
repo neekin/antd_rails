@@ -1,0 +1,26 @@
+<% if @status %>
+  <!-- Status Badge -->
+  <span class="<%= badge_classes %>">
+    <span class="<%= status_dot_classes %>"></span>
+    <% if @text %>
+      <span class="text-sm text-[rgba(0,0,0,0.88)]"><%= @text %></span>
+    <% end %>
+  </span>
+<% elsif content? %>
+  <!-- Badge with children -->
+  <span class="<%= container_classes %>">
+    <%= content %>
+    <% if show_badge? %>
+      <span class="<%= badge_classes %>" <%= "style=\"#{badge_style}\"" if badge_style %>>
+        <%= display_count unless @dot %>
+      </span>
+    <% end %>
+  </span>
+<% else %>
+  <!-- Standalone Badge -->
+  <% if show_badge? %>
+    <span class="<%= badge_classes %>" <%= "style=\"#{badge_style}\"" if badge_style %>>
+      <%= display_count unless @dot %>
+    </span>
+  <% end %>
+<% end %>

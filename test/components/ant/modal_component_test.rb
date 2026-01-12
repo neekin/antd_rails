@@ -36,6 +36,19 @@ class Ant::ModalComponentTest < ViewComponent::TestCase
     assert_selector "div.bg-white[style*='800px']"
   end
 
+  test "renders open modal when open is true" do
+    render_inline(Ant::ModalComponent.new(title: "Open Modal", open: true)) do
+      "Content"
+    end
+
+    # Root container should not have 'hidden' and should mark open value true
+    assert_selector "div[data-controller='ant--modal'][data-ant--modal-open-value='true']"
+    assert_no_selector "div.hidden[data-controller='ant--modal']"
+
+    # Backdrop has closeByBackdrop action wiring
+    assert_selector "div[data-ant--modal-target='backdrop'][data-action='click->ant--modal#closeByBackdrop']"
+  end
+
   test "renders footer slot" do
     render_inline(Ant::ModalComponent.new(title: "Test")) do |component|
       component.with_footer do

@@ -1,0 +1,51 @@
+<div class="w-full <%= @html_options[:class] %>" data-controller="ant--transfer">
+  <!-- Hidden inputs for selected values -->
+  <% if right_items.any? %>
+    <% right_items.each do |(_label, value)| %>
+      <input type="hidden" name="<%= @name %>[]" value="<%= value %>" data-ant--transfer-target="input" />
+    <% end %>
+  <% else %>
+    <!-- keep one empty input for form submission when no selection -->
+    <input type="hidden" name="<%= @name %>[]" value="" data-ant--transfer-target="empty" />
+  <% end %>
+
+  <div class="flex items-stretch gap-4">
+    <!-- Left Panel -->
+    <div class="flex-1 border border-[#f0f0f0] rounded-lg bg-white min-h-[220px] overflow-hidden">
+      <div class="px-3 py-2 border-b border-[#f0f0f0] text-[14px] text-gray-700 font-medium"><%= @left_title %> (<%= left_items.size %>)</div>
+      <div class="p-2 max-h-[280px] overflow-auto text-[14px] text-gray-700">
+        <% if left_items.empty? %>
+          <div class="text-center text-gray-400 py-8">No Data</div>
+        <% else %>
+          <ul class="space-y-1">
+            <% left_items.each do |label, value| %>
+              <li class="px-2 py-1 rounded <%= @disabled ? 'cursor-not-allowed text-gray-400' : 'hover:bg-[#f5f5f5] cursor-pointer' %>" data-value="<%= value %>" data-ant--transfer-target="leftItem"><%= label %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Middle Actions -->
+    <div class="flex flex-col justify-center gap-2">
+      <button type="button" class="inline-flex items-center justify-center min-w-[32px] h-[32px] rounded-[6px] border <%= @disabled ? 'border-[#d9d9d9] text-gray-300 cursor-not-allowed' : 'border-[#d9d9d9] bg-white text-[rgba(0,0,0,0.88)] hover:border-[#1677ff] hover:text-[#1677ff]' %>" <%= 'disabled' if @disabled %> data-action="ant--transfer#toRight">&gt;</button>
+      <button type="button" class="inline-flex items-center justify-center min-w-[32px] h-[32px] rounded-[6px] border <%= @disabled ? 'border-[#d9d9d9] text-gray-300 cursor-not-allowed' : 'border-[#d9d9d9] bg-white text-[rgba(0,0,0,0.88)] hover:border-[#1677ff] hover:text-[#1677ff]' %>" <%= 'disabled' if @disabled %> data-action="ant--transfer#toLeft">&lt;</button>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="flex-1 border border-[#f0f0f0] rounded-lg bg-white min-h-[220px] overflow-hidden">
+      <div class="px-3 py-2 border-b border-[#f0f0f0] text-[14px] text-gray-700 font-medium"><%= @right_title %> (<%= right_items.size %>)</div>
+      <div class="p-2 max-h-[280px] overflow-auto text-[14px] text-gray-700">
+        <% if right_items.empty? %>
+          <div class="text-center text-gray-400 py-8">No Data</div>
+        <% else %>
+          <ul class="space-y-1">
+            <% right_items.each do |label, value| %>
+              <li class="px-2 py-1 rounded <%= @disabled ? 'cursor-not-allowed text-gray-400' : 'hover:bg-[#f5f5f5] cursor-pointer' %>" data-value="<%= value %>" data-ant--transfer-target="rightItem"><%= label %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

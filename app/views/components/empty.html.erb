@@ -1,0 +1,86 @@
+<%= render Ui::ComponentHeaderComponent.new(
+  title: "Empty 空状态",
+  description: "空状态时的占位提示。",
+  when_to_use: [
+    "当目前没有数据时，用于显式的用户提示。",
+    "初次使用产品时的引导创建流程。"
+  ]
+) %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
+
+<%= render Ui::ExampleComponent.new(
+  title: "基本",
+  description: "最简单的用法。",
+  language: :erb,
+  code: empty_basic_code
+) do %>
+  <div class="border border-gray-200 rounded-lg">
+    <%= ant_empty %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "自定义描述",
+  description: "自定义描述文案。",
+  language: :erb,
+  code: empty_custom_description_code
+) do %>
+  <div class="border border-gray-200 rounded-lg">
+    <%= ant_empty description: "No products found" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "简单图标",
+  description: "使用 image: :simple 显示简化的空状态图标。",
+  language: :erb,
+  code: empty_simple_code
+) do %>
+  <div class="border border-gray-200 rounded-lg">
+    <%= ant_empty description: "No data", image: :simple %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "带操作按钮",
+  description: "可以在内容区域添加操作按钮。",
+  language: :erb,
+  code: empty_with_action_code
+) do %>
+  <div class="border border-gray-200 rounded-lg">
+    <%= ant_empty description: "No items yet" do %>
+      <%= ant_button "Create New", type: :primary %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "自定义图片",
+  description: "可以使用自定义图片 URL。",
+  language: :erb,
+  code: empty_custom_image_code
+) do %>
+  <div class="border border-gray-200 rounded-lg">
+    <%= ant_empty description: "Custom empty state", 
+                  image: "https://via.placeholder.com/300x200?text=Custom" %>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ApiTableComponent.new do |api| %>
+  <% api.row "description", "描述文案", "String", "\"No Data\"" %>
+  <% api.row "image", "空状态图片，:default（默认）、:simple（简单）或自定义 URL", "Symbol/String", ":default" %>
+  <% api.row "class", "自定义样式类名", "String", "nil" %>
+<% end %>
+
+<div class="mt-8 p-4 bg-blue-50 rounded-lg">
+  <h4 class="font-semibold text-blue-900 mb-2">💡 使用说明</h4>
+  <ul class="list-disc list-inside text-blue-800 space-y-1">
+    <li><strong>默认图片</strong>：image: :default 显示 Ant Design 风格的空状态插画。</li>
+    <li><strong>简单图标</strong>：image: :simple 显示简化版的空状态图标，适合小空间。</li>
+    <li><strong>自定义图片</strong>：传入图片 URL 可以使用自己的空状态图片。</li>
+    <li><strong>操作按钮</strong>：通过 block 传入内容可以添加操作按钮或其他交互元素。</li>
+    <li><strong>适用场景</strong>：列表为空、搜索无结果、初次使用等场景。</li>
+  </ul>
+</div>
