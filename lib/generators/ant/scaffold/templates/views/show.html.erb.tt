@@ -1,0 +1,37 @@
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <h1 class="text-3xl font-bold text-gray-900"><%= human_name %></h1>
+      <div class="flex gap-2">
+        <%%= ant_button "Edit", type: :primary, href: edit_<%= singular_route_name %>_path(@<%= singular_name %>) %>
+        <%%= ant_button "Back", href: <%= index_helper %>_path %>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+    <div class="px-6 py-6">
+      <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+<% attributes.each do |attribute| -%>
+        <div>
+          <dt class="text-sm font-medium text-gray-500"><%= attribute.human_name %></dt>
+          <dd class="mt-1 text-sm text-gray-900"><%%= @<%= singular_name %>.<%= attribute.name %> %></dd>
+        </div>
+<% end -%>
+      </dl>
+    </div>
+
+    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-between">
+      <div>
+        <%%= button_to "Delete", @<%= singular_name %>, method: :delete,
+                      data: { turbo_confirm: "Are you sure you want to delete this <%= human_name.downcase %>?" } do %>
+          <%%= ant_button "Delete", type: :default, danger: true %>
+        <%% end %>
+      </div>
+      <div class="flex gap-2">
+        <%%= ant_button "Back to List", href: <%= index_helper %>_path %>
+        <%%= ant_button "Edit", type: :primary, href: edit_<%= singular_route_name %>_path(@<%= singular_name %>) %>
+      </div>
+    </div>
+  </div>
+</div>

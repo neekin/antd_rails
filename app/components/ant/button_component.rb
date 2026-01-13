@@ -11,6 +11,7 @@ module Ant
       block: false,
       debounce: 0,
       throttle: 0,
+      href: nil,
       **html_options
     )
       @label = label
@@ -23,6 +24,7 @@ module Ant
       @block = block
       @debounce = debounce
       @throttle = throttle
+      @href = href
       @html_options = html_options
     end
 
@@ -106,6 +108,26 @@ module Ant
 
       # Merge with existing data attributes
       (@html_options[:data] || {}).merge(attrs)
+    end
+
+    def tag_name
+      @href ? :a : :button
+    end
+
+    def tag_attributes
+      attrs = @html_options.merge(
+        class: classes,
+        data: data_attributes
+      )
+
+      if @href
+        attrs[:href] = @href
+      else
+        attrs[:disabled] = (@disabled || @loading)
+        attrs[:type] ||= "button"
+      end
+
+      attrs
     end
   end
 end

@@ -1,0 +1,16 @@
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Editing <%= human_name %></h1>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+    <div class="px-6 py-6">
+      <%%= render "form", <%= singular_name %>: @<%= singular_name %> %>
+    </div>
+  </div>
+
+  <div class="mt-4 flex gap-2">
+    <%%= ant_button "Show", href: <%= singular_route_name %>_path(@<%= singular_name %>) %>
+    <%%= ant_button "Back to List", href: <%= index_helper %>_path %>
+  </div>
+</div>

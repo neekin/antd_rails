@@ -654,6 +654,145 @@ document.getElementById('modal-id').addEventListener('ant--modal:close', (e) => 
 <%= ant_table(@users) %>
 ```
 
+## 3.5 Ant Scaffold Generator (CRUD 脚手架)
+
+项目包含一个自定义的 scaffold 生成器，可以快速生成使用 Ant 组件的 CRUD 代码。
+
+### 基本用法
+
+```bash
+# 生成完整的 CRUD 脚手架
+rails generate ant:scaffold Post title:string content:text published:boolean
+
+# 带外键关联
+rails generate ant:scaffold Comment post:references author:string content:text
+
+# 跳过路由或迁移
+rails generate ant:scaffold Product name:string --skip-routes
+rails generate ant:scaffold Product name:string --skip-migration
+```
+
+### 支持的字段类型
+
+- `string` - 字符串（文本输入框）
+- `text` - 长文本（文本域）
+- `integer` / `decimal` / `float` - 数字（数字输入框）
+- `boolean` - 布尔值（复选框）
+- `date` - 日期（日期选择器）
+- `datetime` - 日期时间
+- `references` - 外键关联（下拉选择框）
+
+### 生成的文件
+
+```
+app/
+├── models/
+│   └── post.rb                    # Model
+├── controllers/
+│   └── posts_controller.rb        # Controller (标准 CRUD)
+└── views/
+    └── posts/
+        ├── index.html.erb         # 列表页面（表格展示）
+        ├── show.html.erb          # 详情页面（卡片布局）
+        ├── new.html.erb           # 新建页面
+        ├── edit.html.erb          # 编辑页面
+        └── _form.html.erb         # 表单部分视图
+
+db/
+└── migrate/
+    └── xxx_create_posts.rb        # Migration
+
+config/
+└── routes.rb                      # 添加 resources :posts
+```
+
+### 生成的代码特性
+
+#### Index 页面
+- 使用 Tailwind CSS 表格样式
+- 每行快速操作按钮（Show, Edit, Delete）
+- 空状态使用 `ant_empty` 组件
+- 新建按钮使用 `ant_button` 组件
+
+#### Show 页面
+- 卡片式布局
+- 字段网格展示
+- 编辑和删除按钮
+- 返回列表按钮
+
+#### New/Edit 页面
+- 使用 `ant_form_for` 构建表单
+- 自动字段类型识别：
+  - `text` → `f.text_area`
+  - `boolean` → `f.checkbox`
+  - `date` → `f.date_picker`
+  - `integer/decimal` → `f.input type: :number`
+  - `references` → `f.collection_select`
+- 表单验证错误显示
+- 提交按钮自动添加 `throttle: 1000`（防重复提交）
+- 取消按钮返回列表
+
+#### Controller
+- 标准 RESTful CRUD 操作
+- Strong Parameters
+- Flash 消息提示
+
+### 使用示例
+
+#### 博客系统
+```bash
+# 生成文章
+rails generate ant:scaffold Post title:string content:text published:boolean published_at:date
+
+# 生成评论（关联到文章）
+rails generate ant:scaffold Comment post:references author:string content:text
+
+# 运行迁移
+rails db:migrate
+
+# 访问 http://localhost:3000/posts
+```
+
+#### 电商系统
+```bash
+# 生成分类
+rails generate ant:scaffold Category name:string description:text
+
+# 生成产品（关联到分类）
+rails generate ant:scaffold Product category:references name:string price:decimal stock:integer description:text
+
+# 生成订单
+rails generate ant:scaffold Order user:references total:decimal status:string
+
+rails db:migrate
+```
+
+### 自定义模板
+
+模板文件位于 `lib/generators/ant/scaffold/templates/`，可以根据需要修改：
+
+- `views/index.html.erb.tt` - 列表页面模板
+- `views/show.html.erb.tt` - 详情页面模板
+- `views/_form.html.erb.tt` - 表单模板
+- `controller.rb.tt` - 控制器模板
+- `model.rb.tt` - 模型模板
+
+修改后重新运行生成器即可应用更改。
+
+### 与默认 scaffold 对比
+
+| 特性 | Ant Scaffold | Rails 默认 Scaffold |
+|------|-------------|-------------------|
+| UI 框架 | Ant 组件 + Tailwind CSS | 基础 HTML |
+| 防重复提交 | ✅ 自动添加 throttle | ❌ 需手动实现 |
+| 空状态提示 | ✅ ant_empty 组件 | ❌ 无 |
+| 表单构建器 | ✅ ant_form_for | Rails form_with |
+| 响应式布局 | ✅ Tailwind 响应式 | ❌ 基础样式 |
+| 组件一致性 | ✅ 统一组件库 | ❌ 原生 HTML |
+| 日期选择 | ✅ ant_date_picker | ❌ date_field |
+
+详细文档参考：`lib/generators/ant/scaffold/USAGE`
+
 ## 4. Architecture Rules & Workflow (DEFINITION OF DONE)
 
 **CRITICAL**: When creating a NEW component (e.g., `Ant::NewComponent`), you MUST complete ALL following steps in order. **No component is considered "complete" until all three phases (Implementation + Testing + Documentation) are finished.**

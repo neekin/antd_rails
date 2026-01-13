@@ -4,19 +4,6 @@
   when_to_use: ["当有大量结构化的数据需要展现时。", "需要对数据进行排序、搜索、分页、自定义操作等复杂行为时。"]
 ) %>
 
-<div class="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
-  <div class="flex items-center justify-between">
-    <div>
-      <h4 class="font-semibold text-blue-900 mb-1">🚀 完整交互示例</h4>
-      <p class="text-sm text-blue-700">查看带有排序、筛选和行选择的完整可交互示例</p>
-    </div>
-    <%= link_to table_demo_path, 
-                class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium" do %>
-      查看实际示例 →
-    <% end %>
-  </div>
-</div>
-
 <% 
    user_struct = Struct.new(:id, :name, :role, :status, :email, :phone, :address)
    users = [

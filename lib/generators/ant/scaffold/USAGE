@@ -1,0 +1,209 @@
+# Ant Scaffold Generator
+
+这是一个自定义的 Rails scaffold 生成器，生成的代码使用项目中的 Ant 组件（Button, Form, Input 等）和 Tailwind CSS。
+
+## 功能特性
+
+- ✅ 使用 Ant 组件（`ant_button`, `ant_form_for`, `ant_input` 等）
+- ✅ 美观的 Tailwind CSS 样式
+- ✅ 响应式设计
+- ✅ 防抖节流支持（表单提交按钮）
+- ✅ 空状态提示（`ant_empty`）
+- ✅ 完整的 CRUD 操作
+- ✅ Turbo 支持
+- ✅ 表单验证错误显示
+
+## 安装
+
+生成器已经包含在项目中，位于 `lib/generators/ant/scaffold/`。
+
+## 使用方法
+
+### 基本用法
+
+```bash
+rails generate ant:scaffold Product name:string price:decimal description:text stock:integer
+```
+
+这将生成：
+- Model: `app/models/product.rb`
+- Migration: `db/migrate/xxx_create_products.rb`
+- Controller: `app/controllers/products_controller.rb`
+- Views: `app/views/products/` (index, show, new, edit, _form)
+- Routes: `resources :products`
+
+### 字段类型
+
+支持所有 Rails 字段类型：
+
+```bash
+# 字符串
+rails generate ant:scaffold Post title:string
+
+# 文本
+rails generate ant:scaffold Post content:text
+
+# 整数
+rails generate ant:scaffold Post views:integer
+
+# 小数
+rails generate ant:scaffold Product price:decimal
+
+# 布尔值
+rails generate ant:scaffold Post published:boolean
+
+# 日期
+rails generate ant:scaffold Event date:date
+
+# 关联（外键）
+rails generate ant:scaffold Comment post:references user:references
+```
+
+### 选项
+
+```bash
+# 跳过路由生成
+rails generate ant:scaffold Product name:string --skip-routes
+
+# 跳过数据库迁移
+rails generate ant:scaffold Product name:string --skip-migration
+```
+
+## 生成的视图特性
+
+### Index 页面
+- 美观的表格展示
+- 搜索和筛选（TODO）
+- 分页支持（TODO）
+- 快速操作按钮（Show, Edit, Delete）
+- 空状态提示
+
+### Show 页面
+- 卡片式详情展示
+- 编辑和删除按钮
+- 返回列表按钮
+
+### New/Edit 页面
+- Ant Form Builder 表单
+- 自动字段类型识别：
+  - `text` → textarea
+  - `boolean` → checkbox
+  - `date` → date_picker
+  - `integer/decimal` → number input
+  - `references` → select dropdown
+- 表单验证错误显示
+- 防抖提交按钮（1秒内只能提交一次）
+
+## 示例
+
+### 创建博客系统
+
+```bash
+# 生成文章模型
+rails generate ant:scaffold Post title:string content:text published:boolean published_at:date
+
+# 生成评论模型（关联到文章）
+rails generate ant:scaffold Comment post:references author:string content:text
+
+# 运行迁移
+rails db:migrate
+
+# 启动服务器
+rails server
+```
+
+访问 `http://localhost:3000/posts` 查看效果。
+
+### 创建电商系统
+
+```bash
+# 生成分类
+rails generate ant:scaffold Category name:string description:text
+
+# 生成产品
+rails generate ant:scaffold Product category:references name:string price:decimal stock:integer description:text
+
+# 运行迁移
+rails db:migrate
+```
+
+## 自定义
+
+### 修改模板
+
+模板文件位于 `lib/generators/ant/scaffold/templates/`：
+
+- `views/index.html.erb.tt` - 列表页面
+- `views/show.html.erb.tt` - 详情页面
+- `views/new.html.erb.tt` - 新建页面
+- `views/edit.html.erb.tt` - 编辑页面
+- `views/_form.html.erb.tt` - 表单部分视图
+- `controller.rb.tt` - 控制器模板
+- `model.rb.tt` - 模型模板
+
+修改这些模板后，重新运行生成器即可应用更改。
+
+### 覆盖默认 scaffold
+
+如果你想用 `rails generate scaffold` 也使用这个生成器，可以在 `config/application.rb` 中配置：
+
+```ruby
+module YourApp
+  class Application < Rails::Application
+    # ...
+    config.generators do |g|
+      g.scaffold_controller "ant:scaffold_controller"
+    end
+  end
+end
+```
+
+## 组件参考
+
+生成的代码使用以下 Ant 组件：
+
+- `ant_button` - 按钮（支持 type, size, danger, throttle 等）
+- `ant_form_for` / `ant_form_with` - 表单构建器
+- `f.input` - 文本输入框
+- `f.date_picker` - 日期选择器
+- `f.checkbox` - 复选框
+- `f.submit` - 提交按钮
+- `ant_empty` - 空状态提示
+
+详细用法参考 `llm_context.md`。
+
+## 对比默认 scaffold
+
+### Ant Scaffold 优势
+
+1. **现代化 UI**：使用 Tailwind CSS 和 Ant 组件
+2. **防抖节流**：表单提交按钮自动防重复提交
+3. **更好的 UX**：空状态提示、加载动画、响应式布局
+4. **一致性**：所有页面使用统一的组件库
+5. **可维护性**：组件化代码更易维护
+
+### 默认 Scaffold
+
+- 基础 HTML 样式
+- 无防重复提交
+- 简单的表格布局
+- 需要手动添加样式
+
+## 注意事项
+
+1. 确保已经正确配置 Ant 组件（参考 `llm_context.md`）
+2. 生成后可能需要根据业务逻辑调整控制器和视图
+3. 外键关联需要确保相关模型已存在
+4. 建议在开发环境测试生成的代码后再部署
+
+## 下一步
+
+- [ ] 添加搜索功能
+- [ ] 添加分页
+- [ ] 添加导出功能
+- [ ] 支持图片上传字段
+- [ ] 支持批量操作
+
+## License
+
+MIT

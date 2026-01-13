@@ -1,8 +1,4 @@
-<%= content_tag :button, **@html_options.merge(
-  class: classes,
-  data: data_attributes,
-  disabled: (@disabled || @loading)
-) do %>
+<%= content_tag tag_name, **tag_attributes do %>
   <% if @loading %>
     <span class="btn-spinner inline-block mr-2">
       <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
