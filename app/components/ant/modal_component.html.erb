@@ -4,7 +4,10 @@
      role="dialog" 
      aria-modal="true"
      data-controller="ant--modal"
-     data-ant--modal-open-value="<%= @open %>">
+     data-ant--modal-open-value="<%= @open %>"
+     data-ant--modal-mask-closable-value="<%= @mask_closable %>"
+     data-ant--modal-destroy-on-close-value="<%= @destroy_on_close %>"
+     <%= @html_options.map { |k, v| "data-ant--modal-#{k.to_s.gsub('_', '-')}-param=\"#{v}\"" }.join(" ").html_safe %>>
   
   <!-- Background backdrop, show/hide based on modal state. -->
   <div class="fixed inset-0 bg-gray-500/75 transition-opacity opacity-0" 
@@ -12,7 +15,7 @@
        data-action="click->ant--modal#closeByBackdrop"></div>
 
   <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+    <div class="flex min-h-full <%= @centered ? 'items-center' : 'items-end sm:items-center' %> justify-center p-4 text-center sm:p-0">
       
       <!-- Modal panel, show/hide based on modal state. -->
       <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 opacity-0 scale-95 translate-y-4 sm:translate-y-0"
@@ -22,12 +25,14 @@
         <!-- Header -->
         <div class="px-6 py-4 border-b border-[#f0f0f0] flex items-center justify-between">
           <h3 class="text-[16px] font-medium leading-6 text-gray-900" id="modal-title"><%= @title %></h3>
-          <button type="button" class="text-gray-400 hover:text-gray-500 focus:outline-none" data-action="ant--modal#close">
-            <span class="sr-only">Close</span>
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <% if @closable %>
+            <button type="button" class="text-gray-400 hover:text-gray-500 focus:outline-none" data-action="ant--modal#close">
+              <span class="sr-only">Close</span>
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          <% end %>
         </div>
 
         <!-- Body -->
@@ -43,8 +48,20 @@
         <% else %>
           <!-- Default Footer -->
           <div class="px-6 py-3 border-t border-[#f0f0f0] flex flex-row-reverse gap-2">
-            <button type="button" class="inline-flex justify-center rounded-[6px] bg-[#1677ff] px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-[#4096ff] transition-all" data-action="ant--modal#ok">OK</button>
-            <button type="button" class="inline-flex justify-center rounded-[6px] bg-white px-4 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all" data-action="ant--modal#close">Cancel</button>
+            <button type="button" 
+                    class="inline-flex justify-center items-center gap-2 rounded-[6px] bg-[#1677ff] px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-[#4096ff] transition-all <%= 'opacity-60 cursor-not-allowed' if @confirm_loading %>" 
+                    data-action="ant--modal#ok"
+                    data-ant--modal-target="okButton"
+                    <%= 'disabled' if @confirm_loading %>>
+              <% if @confirm_loading %>
+                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              <% end %>
+              <%= @ok_text %>
+            </button>
+            <button type="button" class="inline-flex justify-center rounded-[6px] bg-white px-4 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all" data-action="ant--modal#close"><%= @cancel_text %></button>
           </div>
         <% end %>
       </div>

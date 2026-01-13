@@ -11,36 +11,199 @@
 <h3 class="text-xl font-bold text-gray-800 mb-4 mt-8">代码演示</h3>
 
 <%= render Ui::ExampleComponent.new(
-  title: "按钮类型 (Types)", 
-  description: "按钮有四种类型：主按钮、次按钮、虚线按钮、文本按钮(通过样式实现)。",
+  title: "按钮类型", 
+  description: "按钮有五种类型：主按钮、次按钮、虚线按钮、文本按钮和链接按钮。",
   language: :erb,
   code: button_types_code
 ) do %>
-  <%= ant_button "Primary Button", type: :primary %>
-  <%= ant_button "Default Button" %>
-  <%= ant_button "Dashed Button", class: "border-dashed" %>
-  <%= ant_button "Danger Button", type: :primary, class: "!bg-red-500 !border-red-500" %>
+  <div class="flex gap-2">
+    <%= ant_button "Primary Button", type: :primary %>
+    <%= ant_button "Default Button" %>
+    <%= ant_button "Dashed Button", type: :dashed %>
+    <%= ant_button "Text Button", type: :text %>
+    <%= ant_button "Link Button", type: :link %>
+  </div>
 <% end %>
 
 <%= render Ui::ExampleComponent.new(
-  title: "图标与嵌套 (Icon & Block)", 
+  title: "按钮尺寸", 
+  description: "按钮有大、中、小三种尺寸。",
+  language: :erb,
+  code: button_size_code
+) do %>
+  <div class="flex gap-2 items-center">
+    <%= ant_button "Large", type: :primary, size: :large %>
+    <%= ant_button "Middle", type: :primary, size: :middle %>
+    <%= ant_button "Small", type: :primary, size: :small %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "图标按钮", 
   description: "通过 Block 传递内容，可以实现复杂的按钮布局，例如带图标的按钮。",
   language: :erb,
   code: button_icon_code
 ) do %>
-  <%= ant_button type: :primary do %>
-    <span class="mr-2">🔍</span>Search
-  <% end %>
-  <%= ant_button class: "ml-2" do %>
-    Download<span class="ml-2">⬇️</span>
-  <% end %>
+  <div class="flex gap-2">
+    <%= ant_button type: :primary do %>
+      <span class="mr-2">🔍</span>Search
+    <% end %>
+    <%= ant_button do %>
+      Download<span class="ml-2">⬇️</span>
+    <% end %>
+  </div>
 <% end %>
 
-<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12">API</h3>
+<%= render Ui::ExampleComponent.new(
+  title: "禁用状态", 
+  description: "添加 disabled 属性即可让按钮处于不可用状态，同时按钮样式也会改变。",
+  language: :erb,
+  code: button_disabled_code
+) do %>
+  <div class="flex gap-2">
+    <%= ant_button "Disabled Primary", type: :primary, disabled: true %>
+    <%= ant_button "Disabled Default", disabled: true %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "加载状态", 
+  description: "添加 loading 属性即可让按钮处于加载状态，最后两个按钮演示点击后进入加载状态。",
+  language: :erb,
+  code: button_loading_code
+) do %>
+  <div class="flex gap-2">
+    <%= ant_button "Loading", type: :primary, loading: true %>
+    <%= ant_button "Normal Button", type: :primary %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "危险按钮", 
+  description: "危险按钮用于删除/移动/修改权限等危险操作，一般需要二次确认。",
+  language: :erb,
+  code: button_danger_code
+) do %>
+  <div class="flex gap-2">
+    <%= ant_button "Delete", type: :primary, danger: true %>
+    <%= ant_button "Delete", type: :default, danger: true %>
+    <%= ant_button "Delete", type: :dashed, danger: true %>
+    <%= ant_button "Delete", type: :text, danger: true %>
+    <%= ant_button "Delete", type: :link, danger: true %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "幽灵按钮", 
+  description: "幽灵按钮将按钮的内容反色，背景变为透明，常用在有色背景上。",
+  language: :erb,
+  code: button_ghost_code
+) do %>
+  <div class="bg-gray-800 p-4 rounded flex gap-2">
+    <%= ant_button "Primary", type: :primary, ghost: true %>
+    <%= ant_button "Default", ghost: true %>
+    <%= ant_button "Dashed", type: :dashed, ghost: true %>
+    <%= ant_button "Danger", type: :primary, danger: true, ghost: true %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "Block 按钮", 
+  description: "block 属性将使按钮适合其父宽度。",
+  language: :erb,
+  code: button_block_code
+) do %>
+  <div>
+    <%= ant_button "Block Button", type: :primary, block: true %>
+    <%= ant_button "Block Button", block: true, class: "mt-2" %>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "防抖（Debounce）", 
+  description: "防抖可以防止用户快速连续点击，只在最后一次点击后延迟执行。适用于搜索输入等场景。",
+  language: :erb,
+  code: button_debounce_code
+) do %>
+  <div class="flex gap-2">
+    <%= ant_button "Search (Debounce 300ms)", 
+                   type: :primary, 
+                   debounce: 300, 
+                   onclick: "console.log('Searched at', new Date())" %>
+    <span class="text-gray-500 self-center text-sm">← 快速点击多次，只会在最后一次点击 300ms 后执行</span>
+  </div>
+<% end %>
+
+<%= render Ui::ExampleComponent.new(
+  title: "节流（Throttle）", 
+  description: "节流可以限制函数执行频率，在指定时间内最多执行一次。适用于表单提交、保存等场景。",
+  language: :erb,
+  code: button_throttle_code
+) do %>
+  <div class="flex gap-2">
+    <%= ant_button "Save (Throttle 1000ms)", 
+                   type: :primary, 
+                   throttle: 1000, 
+                   onclick: "console.log('Saved at', new Date())" %>
+    <span class="text-gray-500 self-center text-sm">← 连续点击，每秒最多执行一次</span>
+  </div>
+<% end %>
+
+<h3 class="text-xl font-bold text-gray-800 mb-4 mt-12 border-b pb-2 text-pink-600">API</h3>
 <%= render Ui::ApiTableComponent.new do |api| %>
   <% api.row "label", "按钮文本内容（若不使用 block）", "String", "nil" %>
-  <% api.row "type", "按钮类型，决定颜色和样式", "Symbol (:primary, :default)", ":default" %>
-  <% api.row "class", "自定义 CSS 类名，覆盖或追加样式", "String", "nil" %>
-  <% api.row "html_options", "其他标准 HTML 属性 (如 data-*, id, onclick)", "Hash", "{}" %>
-  <% api.row "block", "自定义按钮内部 HTML 内容，优先级高于 label", "Block", "nil" %>
+  <% api.row "type", "按钮类型", "Symbol (:primary, :default, :dashed, :text, :link)", ":default" %>
+  <% api.row "size", "按钮尺寸", "Symbol (:small, :middle, :large)", ":middle" %>
+  <% api.row "danger", "危险按钮", "Boolean", "false" %>
+  <% api.row "ghost", "幽灵按钮（背景透明）", "Boolean", "false" %>
+  <% api.row "disabled", "禁用状态", "Boolean", "false" %>
+  <% api.row "loading", "加载状态", "Boolean", "false" %>
+  <% api.row "block", "将按钮宽度调整为其父宽度", "Boolean", "false" %>
+  <% api.row "debounce", "防抖延迟（毫秒）", "Integer", "0" %>
+  <% api.row "throttle", "节流延迟（毫秒）", "Integer", "0" %>
+  <% api.row "class", "自定义 CSS 类名", "String", "nil" %>
+  <% api.row "onclick", "点击事件处理器（JavaScript）", "String", "nil" %>
+  <% api.row "**html_options", "其他标准 HTML 属性", "Hash", "{}" %>
 <% end %>
+
+<h4 class="font-bold text-gray-700 mt-10 mb-4 flex items-center">
+  <span class="bg-gray-100 px-2 py-1 rounded text-pink-600 font-mono mr-2">JavaScript API</span>
+</h4>
+<div class="bg-gray-50 p-4 rounded-lg">
+  <pre class="text-sm"><code class="language-javascript">// 获取按钮控制器（当使用 debounce/throttle/loading 时）
+const button = document.getElementById('my-button');
+const controller = application.getControllerForElementAndIdentifier(
+  button.closest('[data-controller="ant--button"]'), 
+  'ant--button'
+);
+
+// 设置加载状态
+controller.setLoading(true);   // 显示加载动画，禁用按钮
+controller.setLoading(false);  // 取消加载状态
+
+// 示例：异步操作
+async function handleSubmit(btn) {
+  const controller = getButtonController(btn);
+  controller.setLoading(true);
+  
+  try {
+    await submitForm();
+    console.log('Success');
+  } finally {
+    controller.setLoading(false);
+  }
+}</code></pre>
+</div>
+
+<h4 class="font-bold text-gray-700 mt-10 mb-4 flex items-center">
+  <span class="bg-gray-100 px-2 py-1 rounded text-pink-600 font-mono mr-2">使用建议</span>
+</h4>
+<div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+  <p class="text-sm text-gray-700"><strong>防抖 vs 节流：</strong></p>
+  <ul class="list-disc list-inside text-sm text-gray-700 mt-2 space-y-1">
+    <li><strong>防抖（Debounce）</strong>：适用于搜索框输入、窗口调整等场景，等待用户停止操作后再执行</li>
+    <li><strong>节流（Throttle）</strong>：适用于表单提交、保存按钮等场景，限制执行频率防止重复提交</li>
+    <li>推荐表单提交使用 <code>throttle: 1000</code>（1秒内最多提交一次）</li>
+    <li>推荐搜索使用 <code>debounce: 300</code>（用户停止输入300ms后搜索）</li>
+  </ul>
+</div>

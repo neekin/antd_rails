@@ -3,8 +3,9 @@ module DocumentationHelper
     <<~RUBY
       <%= ant_button "Primary Button", type: :primary %>
       <%= ant_button "Default Button" %>
-      <%= ant_button "Dashed Button", class: "border-dashed" %>
-      <%= ant_button "Danger Button", type: :primary, class: "!bg-red-500 !border-red-500" %>
+      <%= ant_button "Dashed Button", type: :dashed %>
+      <%= ant_button "Text Button", type: :text %>
+      <%= ant_button "Link Button", type: :link %>
     RUBY
   end
 
@@ -17,6 +18,109 @@ module DocumentationHelper
       <%= ant_button class: "ml-2" do %>
         Download<span class="ml-2">⬇️</span>
       <% end %>
+    RUBY
+  end
+
+  def button_size_code
+    <<~RUBY
+      <%= ant_button "Large", type: :primary, size: :large %>
+      <%= ant_button "Middle", type: :primary, size: :middle %>
+      <%= ant_button "Small", type: :primary, size: :small %>
+    RUBY
+  end
+
+  def button_disabled_code
+    <<~RUBY
+      <%= ant_button "Disabled Primary", type: :primary, disabled: true %>
+      <%= ant_button "Disabled Default", disabled: true %>
+    RUBY
+  end
+
+  def button_loading_code
+    <<~RUBY
+      <%= ant_button "Loading", type: :primary, loading: true %>
+      <%= ant_button "Normal Button", type: :primary %>
+    RUBY
+  end
+
+  def button_danger_code
+    <<~RUBY
+      <%= ant_button "Delete", type: :primary, danger: true %>
+      <%= ant_button "Delete", type: :default, danger: true %>
+      <%= ant_button "Delete", type: :dashed, danger: true %>
+      <%= ant_button "Delete", type: :text, danger: true %>
+      <%= ant_button "Delete", type: :link, danger: true %>
+    RUBY
+  end
+
+  def button_ghost_code
+    <<~RUBY
+      <div class="bg-gray-800 p-4 rounded">
+        <%= ant_button "Primary", type: :primary, ghost: true %>
+        <%= ant_button "Default", ghost: true %>
+        <%= ant_button "Dashed", type: :dashed, ghost: true %>
+        <%= ant_button "Danger", type: :primary, danger: true, ghost: true %>
+      </div>
+    RUBY
+  end
+
+  def button_block_code
+    <<~RUBY
+      <%= ant_button "Block Button", type: :primary, block: true %>
+      <%= ant_button "Block Button", block: true, class: "mt-2" %>
+    RUBY
+  end
+
+  def button_debounce_code
+    <<~RUBY
+      <!-- 防抖：300ms 内多次点击只执行一次 -->
+      <%= ant_button "Search (Debounce 300ms)",#{' '}
+                     type: :primary,#{' '}
+                     debounce: 300,#{' '}
+                     onclick: "console.log('Searched at', new Date())" %>
+    RUBY
+  end
+
+  def button_throttle_code
+    <<~RUBY
+      <!-- 节流：每 1000ms 最多执行一次 -->
+      <%= ant_button "Save (Throttle 1000ms)",#{' '}
+                     type: :primary,#{' '}
+                     throttle: 1000,#{' '}
+                     onclick: "console.log('Saved at', new Date())" %>
+    RUBY
+  end
+
+  def button_async_code
+    <<~RUBY
+      <%= ant_button "Submit Form",#{' '}
+                     type: :primary,#{' '}
+                     id: "async-btn",#{' '}
+                     onclick: "handleAsyncSubmit(this)" %>
+
+      <script>
+      async function handleAsyncSubmit(btn) {
+        const controller = btn.closest('[data-controller=\"ant--button\"]');
+        if (!controller) return;
+        #{' '}
+        // 获取 Stimulus 控制器并设置加载状态
+        const stimulusController = application.getControllerForElementAndIdentifier(
+          controller, 'ant--button'
+        );
+        #{' '}
+        if (stimulusController) {
+          stimulusController.setLoading(true);
+          #{' '}
+          try {
+            // 模拟异步操作
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            console.log('Form submitted successfully');
+          } finally {
+            stimulusController.setLoading(false);
+          }
+        }
+      }
+      </script>
     RUBY
   end
 
@@ -242,13 +346,169 @@ module DocumentationHelper
       </button>
 
       <!-- Modal Component -->
-            <%= ant_modal(title: "Basic Modal", id: "my-modal", open: false) do |modal| %>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-            <% end %>
-          RUBY
-        end
+      <%= ant_modal(title: "Basic Modal", id: "my-modal", open: false) do %>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      <% end %>
+    RUBY
+  end
+
+  def modal_custom_footer_code
+    <<~RUBY
+      <button onclick="document.getElementById('custom-footer-modal').ant_modal_controller.open()"#{' '}
+              class="px-4 py-2 bg-blue-600 text-white rounded">
+        Custom Footer
+      </button>
+
+      <%= ant_modal(title: "Custom Footer", id: "custom-footer-modal") do |modal| %>
+        <% modal.with_footer do %>
+          <%= ant_button "Return", type: :default, onclick: "document.getElementById('custom-footer-modal').ant_modal_controller.close()" %>
+          <%= ant_button "Submit", type: :primary, onclick: "document.getElementById('custom-footer-modal').ant_modal_controller.close()" %>
+          <%= ant_button "Search on Google", type: :dashed, onclick: "window.open('https://google.com')" %>
+        <% end %>
+        <p>Modal content...</p>
+      <% end %>
+    RUBY
+  end
+
+  def modal_async_code
+    <<~RUBY
+      <button onclick="openAsyncModal()" class="px-4 py-2 bg-blue-600 text-white rounded">
+        Async Modal
+      </button>
+
+      <%= ant_modal(title: "Async Operation", id: "async-modal") do %>
+        <p>Click OK button to simulate an async operation...</p>
+      <% end %>
+
+      <script>
+      function openAsyncModal() {
+        const modal = document.getElementById('async-modal').ant_modal_controller;
+        modal.open();
+      #{'  '}
+        // Listen for OK button click
+        document.getElementById('async-modal').addEventListener('ant--modal:ok', async (event) => {
+          event.preventDefault(); // Prevent default close behavior
+      #{'    '}
+          modal.setConfirmLoading(true);
+      #{'    '}
+          // Simulate async operation
+          await new Promise(resolve => setTimeout(resolve, 2000));
+      #{'    '}
+          modal.setConfirmLoading(false);
+          modal.close();
+        }, { once: true });
+      }
+      </script>
+    RUBY
+  end
+
+  def modal_confirm_code
+    <<~RUBY
+      <button onclick="showConfirm()" class="px-4 py-2 bg-blue-600 text-white rounded">
+        Confirm Delete
+      </button>
+
+      <script>
+      function showConfirm() {
+        const modalHtml = `
+          <%= ant_modal(
+            title: "Are you sure?",
+            id: "confirm-modal",
+            open: true,
+            ok_text: "Delete",
+            cancel_text: "Cancel",
+            destroy_on_close: true
+          ) do %>
+            <p class="text-red-600">This action cannot be undone.</p>
+          <% end %>
+        `;
+      #{'  '}
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+      #{'  '}
+        const modal = document.getElementById('confirm-modal');
+      #{'  '}
+        modal.addEventListener('ant--modal:ok', () => {
+          console.log('Confirmed! Deleting...');
+        });
+      #{'  '}
+        modal.addEventListener('ant--modal:cancel', () => {
+          console.log('Cancelled');
+        });
+      }
+      </script>
+    RUBY
+  end
+
+  def modal_sizes_code
+    <<~RUBY
+      <%= ant_button "Small", onclick: "document.getElementById('small-modal').ant_modal_controller.open()" %>
+      <%= ant_button "Middle (Default)", onclick: "document.getElementById('middle-modal').ant_modal_controller.open()" %>
+      <%= ant_button "Large", onclick: "document.getElementById('large-modal').ant_modal_controller.open()" %>
+
+      <%= ant_modal(title: "Small Modal", id: "small-modal", size: :small) do %>
+        <p>This is a small modal (400px)</p>
+      <% end %>
+
+      <%= ant_modal(title: "Middle Modal", id: "middle-modal", size: :middle) do %>
+        <p>This is a middle modal (520px, default)</p>
+      <% end %>
+
+      <%= ant_modal(title: "Large Modal", id: "large-modal", size: :large) do %>
+        <p>This is a large modal (800px)</p>
+      <% end %>
+    RUBY
+  end
+
+  def modal_centered_code
+    <<~RUBY
+      <button onclick="document.getElementById('centered-modal').ant_modal_controller.open()"#{' '}
+              class="px-4 py-2 bg-blue-600 text-white rounded">
+        Centered Modal
+      </button>
+
+      <%= ant_modal(title: "Centered Modal", id: "centered-modal", centered: true) do %>
+        <p>This modal is vertically centered.</p>
+      <% end %>
+    RUBY
+  end
+
+  def modal_no_close_code
+    <<~RUBY
+      <button onclick="document.getElementById('no-close-modal').ant_modal_controller.open()"#{' '}
+              class="px-4 py-2 bg-blue-600 text-white rounded">
+        No Close Button
+      </button>
+
+      <%= ant_modal(
+        title: "No Close Button",#{' '}
+        id: "no-close-modal",#{' '}
+        closable: false,#{' '}
+        mask_closable: false
+      ) do %>
+        <p>You must click Cancel or OK to close this modal.</p>
+      <% end %>
+    RUBY
+  end
+
+  def modal_custom_text_code
+    <<~RUBY
+      <button onclick="document.getElementById('custom-text-modal').ant_modal_controller.open()"#{' '}
+              class="px-4 py-2 bg-blue-600 text-white rounded">
+        Custom Button Text
+      </button>
+
+      <%= ant_modal(
+        title: "Custom Button Text",#{' '}
+        id: "custom-text-modal",#{' '}
+        ok_text: "确定",#{' '}
+        cancel_text: "取消"
+      ) do %>
+        <p>This modal has custom button text in Chinese.</p>
+      <% end %>
+    RUBY
+  end
 
   def calendar_basic_code
     <<~RUBY

@@ -19,8 +19,104 @@ When writing views, ALWAYS use the following helpers. Do NOT write raw `<div>` w
 
 ### Button
 ```erb
-<%= ant_button "Save", type: :primary %>
+<!-- Basic Buttons (基本按钮) -->
+<%= ant_button "Primary", type: :primary %>
+<%= ant_button "Default" %>
+<%= ant_button "Dashed", type: :dashed %>
+<%= ant_button "Text", type: :text %>
+<%= ant_button "Link", type: :link %>
+
+<!-- Sizes (尺寸) -->
+<%= ant_button "Large", type: :primary, size: :large %>
+<%= ant_button "Middle", type: :primary, size: :middle %>
+<%= ant_button "Small", type: :primary, size: :small %>
+
+<!-- Danger Buttons (危险按钮) -->
+<%= ant_button "Delete", type: :primary, danger: true %>
+<%= ant_button "Delete", type: :default, danger: true %>
+
+<!-- Ghost Buttons (幽灵按钮 - 透明背景) -->
+<%= ant_button "Ghost Primary", type: :primary, ghost: true %>
+<%= ant_button "Ghost Default", ghost: true %>
+
+<!-- States (状态) -->
+<%= ant_button "Disabled", type: :primary, disabled: true %>
+<%= ant_button "Loading", type: :primary, loading: true %>
+<%= ant_button "Block Button", type: :primary, block: true %>
+
+<!-- Icon Button (图标按钮) -->
+<%= ant_button type: :primary do %>
+  <span class="mr-2">🔍</span>Search
+<% end %>
+
+<!-- Debounce (防抖 - 防止快速重复点击) -->
+<%= ant_button "Search", 
+               type: :primary, 
+               debounce: 300, 
+               onclick: "performSearch()" %>
+
+<!-- Throttle (节流 - 限制执行频率) -->
+<%= ant_button "Save", 
+               type: :primary, 
+               throttle: 1000, 
+               onclick: "saveForm()" %>
+
+<!-- Async Operation with Loading (异步操作) -->
+<%= ant_button "Submit", 
+               type: :primary, 
+               id: "submit-btn", 
+               onclick: "handleAsyncSubmit(this)" %>
+
+<script>
+async function handleAsyncSubmit(btn) {
+  // 获取 Stimulus 控制器
+  const controller = btn.closest('[data-controller="ant--button"]');
+  const stimulusController = application.getControllerForElementAndIdentifier(
+    controller, 'ant--button'
+  );
+  
+  if (stimulusController) {
+    stimulusController.setLoading(true); // 显示加载动画
+    
+    try {
+      await submitFormData(); // 执行异步操作
+      console.log('Success');
+    } finally {
+      stimulusController.setLoading(false); // 取消加载
+    }
+  }
+}
+</script>
 ```
+
+**Button 组件参数说明：**
+- `label`: 按钮文本（不使用 block 时）
+- `type`: 按钮类型（`:primary`、`:default`、`:dashed`、`:text`、`:link`），默认 `:default`
+- `size`: 按钮尺寸（`:small`、`:middle`、`:large`），默认 `:middle`
+- `danger`: 危险按钮（红色），默认 `false`
+- `ghost`: 幽灵按钮（透明背景），默认 `false`
+- `disabled`: 禁用状态，默认 `false`
+- `loading`: 加载状态（显示旋转图标），默认 `false`
+- `block`: 块级按钮（宽度 100%），默认 `false`
+- `debounce`: 防抖延迟（毫秒），默认 `0`（不启用）
+- `throttle`: 节流延迟（毫秒），默认 `0`（不启用）
+- `onclick`: 点击事件处理器（JavaScript 字符串）
+- `class`: 自定义 CSS 类
+- `**html_options`: 其他 HTML 属性
+
+**Button 组件特性：**
+- **防抖（Debounce）**：用户停止点击后延迟执行，适合搜索框、输入验证等场景
+- **节流（Throttle）**：限制执行频率，适合表单提交、保存按钮等场景，防止重复提交
+- **加载状态**：自动显示旋转图标，禁用按钮交互
+- **多种类型和尺寸**：支持 5 种按钮类型和 3 种尺寸
+- **危险操作**：红色危险按钮用于删除等操作
+- **幽灵按钮**：透明背景，适合深色背景
+
+**使用建议：**
+- 表单提交按钮推荐使用 `throttle: 1000`（1秒内最多提交一次）
+- 搜索按钮推荐使用 `debounce: 300`（停止输入300ms后执行）
+- 异步操作使用 `setLoading()` 方法显示加载状态
+- 主要操作使用 `type: :primary`，一个区域通常只有一个主按钮
 
 ### Input & Form
 ```erb
@@ -397,6 +493,161 @@ function showMessage() {
 - 简单图标：适合小空间
 - 可添加操作按钮
 - 适用于列表为空、搜索无结果等场景
+
+### Modal
+```erb
+<!-- Basic Modal (基本对话框) -->
+<button onclick="document.getElementById('my-modal').ant_modal_controller.open()">
+  Open Modal
+</button>
+
+<%= ant_modal(title: "Basic Modal", id: "my-modal") do %>
+  <p>Some contents...</p>
+<% end %>
+
+<!-- Custom Footer (自定义页脚) -->
+<%= ant_modal(title: "Custom Footer", id: "custom-modal") do |modal| %>
+  <% modal.with_footer do %>
+    <%= ant_button "Return", type: :default, onclick: "..." %>
+    <%= ant_button "Submit", type: :primary, onclick: "..." %>
+  <% end %>
+  <p>Modal content...</p>
+<% end %>
+
+<!-- Async Operation (异步操作) -->
+<script>
+function openAsyncModal() {
+  const modal = document.getElementById('async-modal').ant_modal_controller;
+  modal.open();
+  
+  // 监听确定按钮点击
+  document.getElementById('async-modal').addEventListener('ant--modal:ok', async (event) => {
+    event.preventDefault(); // 阻止默认关闭
+    
+    modal.setConfirmLoading(true); // 显示加载状态
+    
+    // 执行异步操作
+    await fetchData();
+    
+    modal.setConfirmLoading(false); // 取消加载状态
+    modal.close(); // 手动关闭
+  }, { once: true });
+}
+</script>
+
+<!-- Different Sizes (不同尺寸) -->
+<%= ant_modal(title: "Small", id: "small-modal", size: :small) do %>
+  <p>400px width</p>
+<% end %>
+
+<%= ant_modal(title: "Middle", id: "middle-modal", size: :middle) do %>
+  <p>520px width (default)</p>
+<% end %>
+
+<%= ant_modal(title: "Large", id: "large-modal", size: :large) do %>
+  <p>800px width</p>
+<% end %>
+
+<!-- Centered Modal (垂直居中) -->
+<%= ant_modal(title: "Centered", id: "centered-modal", centered: true) do %>
+  <p>Vertically centered modal</p>
+<% end %>
+
+<!-- No Close Button (禁用关闭) -->
+<%= ant_modal(
+  title: "No Close",
+  id: "no-close-modal",
+  closable: false,
+  mask_closable: false
+) do %>
+  <p>Must click OK or Cancel to close</p>
+<% end %>
+
+<!-- Custom Button Text (自定义按钮文本) -->
+<%= ant_modal(
+  title: "Custom Text",
+  id: "custom-text-modal",
+  ok_text: "确定",
+  cancel_text: "取消"
+) do %>
+  <p>Chinese button text</p>
+<% end %>
+
+<!-- Confirm Dialog (确认对话框) -->
+<script>
+function showConfirm() {
+  const modalHtml = `
+    <%= ant_modal(
+      title: "Are you sure?",
+      id: "confirm-modal",
+      open: true,
+      ok_text: "Delete",
+      destroy_on_close: true
+    ) do %>
+      <p class="text-red-600">This action cannot be undone.</p>
+    <% end %>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  
+  const modal = document.getElementById('confirm-modal');
+  modal.addEventListener('ant--modal:ok', () => {
+    console.log('Confirmed!');
+    modal.ant_modal_controller.close();
+  });
+}
+</script>
+```
+
+**Modal 组件参数说明：**
+- `title`: 标题
+- `id`: 对话框唯一标识（用于 JS 调用），默认自动生成
+- `open`: 对话框是否可见，默认 `false`
+- `width`: 自定义宽度（如 "600px"）
+- `size`: 预设尺寸（`:small` 400px、`:middle` 520px、`:large` 800px），默认 `:middle`
+- `closable`: 是否显示右上角关闭按钮，默认 `true`
+- `mask_closable`: 点击蒙层是否允许关闭，默认 `true`
+- `centered`: 垂直居中展示，默认 `false`
+- `ok_text`: 确认按钮文字，默认 "OK"
+- `cancel_text`: 取消按钮文字，默认 "Cancel"
+- `confirm_loading`: 确定按钮 loading 状态，默认 `false`
+- `destroy_on_close`: 关闭时销毁 Modal 里的子元素，默认 `false`
+
+**Modal 组件特性：**
+- 支持自定义页脚（通过 `with_footer` slot）
+- 点击蒙层或 ESC 键关闭
+- 异步操作支持（通过事件回调）
+- 三种预设尺寸或自定义宽度
+- 打开时禁止页面滚动
+
+**JavaScript API：**
+```javascript
+// 获取 Modal 控制器
+const modal = document.getElementById('modal-id').ant_modal_controller;
+
+// 方法
+modal.open();                    // 打开对话框
+modal.close();                   // 关闭对话框
+modal.setConfirmLoading(true);   // 设置加载状态
+
+// 事件监听
+document.getElementById('modal-id').addEventListener('ant--modal:open', (e) => {
+  // 对话框打开时触发
+});
+
+document.getElementById('modal-id').addEventListener('ant--modal:ok', (e) => {
+  // 点击确定按钮时触发（可以 preventDefault 阻止关闭）
+  e.preventDefault(); // 阻止默认关闭行为
+});
+
+document.getElementById('modal-id').addEventListener('ant--modal:cancel', (e) => {
+  // 点击取消按钮时触发（可以 preventDefault 阻止关闭）
+});
+
+document.getElementById('modal-id').addEventListener('ant--modal:close', (e) => {
+  // 对话框关闭后触发
+});
+```
 
 ### Table
 ```erb

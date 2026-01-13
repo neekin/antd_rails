@@ -54,8 +54,8 @@ module AntHelper
     render Ant::PaginationComponent.new(current_page: current_page, total_count: total_count, per_page: per_page, **options)
   end
 
-  def ant_modal(title: nil, id: nil, open: false, **options, &block)
-    render Ant::ModalComponent.new(title: title, id: id, open: open, **options), &block
+  def ant_modal(title: nil, id: nil, open: false, width: nil, size: :middle, **options, &block)
+    render Ant::ModalComponent.new(title: title, id: id, open: open, width: width, size: size, **options), &block
   end
 
   def ant_calendar(value: nil, mode: "month", fullscreen: true, selectable: false,
