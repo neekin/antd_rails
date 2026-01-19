@@ -1202,4 +1202,88 @@ module DocumentationHelper
       <%= ant_message(message: 'Persistent message', duration: 0) %>
     RUBY
   end
+
+  # Pagination examples
+  def pagination_basic_code
+    <<~RUBY
+      <%= ant_pagination current_page: 1, total_count: 50, per_page: 10 %>
+    RUBY
+  end
+
+  def pagination_more_code
+    <<~RUBY
+      <%= ant_pagination current_page: 5, total_count: 500, per_page: 10 %>
+    RUBY
+  end
+
+  def pagination_size_changer_code
+    <<~RUBY
+      <%= ant_pagination current_page: 1,#{' '}
+                         total_count: 500,#{' '}
+                         per_page: 20,#{' '}
+                         show_size_changer: true %>
+    RUBY
+  end
+
+  def pagination_with_table_code
+    <<~RUBY
+      <%# Controller %>
+      def index
+        @posts = Post.page(params[:page]).per(params[:per_page] || 10)
+        @total_count = Post.count
+        @current_page = params[:page] || 1
+        @per_page = params[:per_page] || 10
+      end
+
+      <%# View %>
+      <%= ant_table @posts do |t| %>
+        <% t.column "Title" do |post| %>
+          <%= post.title %>
+        <% end %>
+      <% end %>
+
+      <%= ant_pagination current_page: @current_page,
+                         total_count: @total_count,
+                         per_page: @per_page,
+                         show_size_changer: true %>
+    RUBY
+  end
+
+  def pagination_jumper_code
+    <<~RUBY
+      <%= ant_pagination current_page: 3, 
+                         total_count: 500, 
+                         per_page: 10, 
+                         show_quick_jumper: true %>
+    RUBY
+  end
+
+  def pagination_simple_code
+    <<~RUBY
+      <%= ant_pagination current_page: 2, 
+                         total_count: 50, 
+                         per_page: 10, 
+                         simple: true %>
+    RUBY
+  end
+
+  def pagination_small_code
+    <<~RUBY
+      <%= ant_pagination current_page: 2, 
+                         total_count: 100, 
+                         per_page: 10, 
+                         size: :small %>
+    RUBY
+  end
+
+  def pagination_full_code
+    <<~RUBY
+      <%= ant_pagination current_page: 3, 
+                         total_count: 500, 
+                         per_page: 20,
+                         show_size_changer: true,
+                         show_quick_jumper: true,
+                         page_size_options: [10, 20, 30, 50, 100] %>
+    RUBY
+  end
 end

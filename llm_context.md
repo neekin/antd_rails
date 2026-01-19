@@ -654,6 +654,81 @@ document.getElementById('modal-id').addEventListener('ant--modal:close', (e) => 
 <%= ant_table(@users) %>
 ```
 
+### Pagination
+```erb
+<!-- 基本分页 -->
+<%= ant_pagination current_page: 1, 
+                   total_count: 100, 
+                   per_page: 10 %>
+
+<!-- 可切换每页条数 -->
+<%= ant_pagination current_page: @current_page,
+                   total_count: @total_count,
+                   per_page: @per_page,
+                   show_size_changer: true %>
+
+<!-- 快速跳转 -->
+<%= ant_pagination current_page: 3,
+                   total_count: 500,
+                   per_page: 10,
+                   show_quick_jumper: true %>
+
+<!-- 简洁模式 -->
+<%= ant_pagination current_page: 2,
+                   total_count: 50,
+                   per_page: 10,
+                   simple: true %>
+
+<!-- 小尺寸 -->
+<%= ant_pagination current_page: 2,
+                   total_count: 100,
+                   per_page: 10,
+                   size: :small %>
+
+<!-- 完整配置 -->
+<%= ant_pagination current_page: @current_page,
+                   total_count: @total_count,
+                   per_page: @per_page,
+                   show_size_changer: true,
+                   show_quick_jumper: true,
+                   show_total: true,
+                   page_size_options: [10, 20, 50, 100] %>
+
+<!-- 配合 Controller 使用 -->
+# Controller
+def index
+  @posts = Post.page(params[:page]).per(params[:per_page] || 10)
+  @total_count = Post.count
+  @current_page = params[:page] || 1
+  @per_page = params[:per_page] || 10
+end
+
+# View
+<%= ant_pagination current_page: @current_page,
+                   total_count: @total_count,
+                   per_page: @per_page %>
+```
+
+**Pagination 组件参数：**
+- `current_page`: 当前页数（默认：1）
+- `total_count`: 数据总数（默认：0）
+- `per_page`: 每页条数（默认：10）
+- `param_name`: 页码的 URL 参数名（默认：`:page`）
+- `per_page_param_name`: 每页条数的 URL 参数名（默认：`:per_page`）
+- `show_size_changer`: 是否显示 pageSize 切换器（默认：`true`）
+- `show_quick_jumper`: 是否可以快速跳转至某页（默认：`false`）
+- `show_total`: 是否显示总数（默认：`true`）
+- `simple`: 简洁模式（默认：`false`）
+- `size`: 尺寸大小（`:default` | `:small`，默认：`:default`）
+- `page_size_options`: 指定每页可以显示多少条（默认：`[10, 20, 50, 100]`）
+
+**特性：**
+- 页码过多时自动显示省略号
+- 支持自定义每页条数选项
+- 支持快速跳转到指定页
+- 简洁模式适用于移动端
+- 自动生成正确的 URL 参数
+
 ## 3.5 Ant Scaffold Generator (CRUD 脚手架)
 
 项目包含一个自定义的 scaffold 生成器，可以快速生成使用 Ant 组件的 CRUD 代码。
